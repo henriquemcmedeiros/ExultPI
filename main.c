@@ -7,23 +7,25 @@
 #include <allegro5/allegro_primitives.h>
 #include <allegro5/allegro_audio.h>
 #include <allegro5/allegro_acodec.h>
+#include <../../../../../mapas.h>
 
 //__________________________________________
 //Variaveis globais
 
 ALLEGRO_SAMPLE* trilha_sonora = NULL;
 ALLEGRO_SAMPLE_INSTANCE* inst_trilha_sonora = NULL;  //instanciar evita conflitos e permite functions a mais
+int map[15][20];
 
 enum KEYS { UP, DOWN, LEFT, RIGHT };
 
 int main(void)
 {
-
 	int width = 640;
 	int height = 480;
-
+	int blocksize = 32;
+	
 	bool done = false;	
-	int  pos_x = width / 2;
+	int pos_x = width / 2;
 	int pos_y = height / 2;                        //declarando variáveis
 
 	bool keys[4] = { false, false, false, false };
@@ -41,12 +43,10 @@ int main(void)
 
 //-------------------------------------
 		//inicializacao de ADDONS e INSTALACOES
-
 		al_install_audio();
 		al_init_acodec_addon();
 		al_init_primitives_addon();
 		al_install_keyboard();
-
 		al_reserve_samples(15);  //"quantos audios vai ter no jogo"
 
 //-------------------------------------
@@ -63,6 +63,7 @@ int main(void)
 		al_register_event_source(event_queue, al_get_keyboard_event_source());
 		al_register_event_source(event_queue, al_get_display_event_source(display));
 
+		// gera mapas, mas n guarda map = geraMapas(1);
 		
 		while (!done)			
 		{
@@ -129,7 +130,7 @@ int main(void)
 			pos_x += keys[RIGHT] * 10;
 
 
-			al_draw_filled_rectangle(pos_x, pos_y, pos_x + 30, pos_y + 30, al_map_rgb(200, 0, 055));  //desenho do SQUARE, posição e cor
+			al_draw_filled_rectangle(pos_x, pos_y, pos_x + 32, pos_y + 32, al_map_rgb(200, 0, 055));  //desenho do SQUARE, posição e cor
 			al_flip_display();
 			al_clear_to_color(al_map_rgb(192, 192, 192));
 
