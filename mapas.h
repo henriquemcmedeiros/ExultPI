@@ -1,19 +1,47 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void geraMapas(int mapa);
+int **geraMapas(int mapa);
 
-int main(void) {
-    geraMapas();
-}
+const int altura = 15;
+const int largura = 20;
 
-int *geraMapas(int mapa) {
-    int altura = 15;
-    int largura = 20;
-    int mapa1[altura][largura];
-    int mapa2[altura][largura];
-    int mapa3[altura][largura];
-    int mapa4[altura][largura];
+int **geraMapas(int mapa) {
+    // ------ Alocando Mapa 1 ------
+    // allocate Rows rows, each row is a pointer to int
+    int** mapa1 = (int**)malloc(altura * sizeof(int*));
+
+    // for each row allocate Cols ints
+    for (int row = 0; row < altura; row++) {
+        mapa1[row] = (int*)malloc(largura * sizeof(int));
+    }
+
+    // ------ Alocando Mapa 2 ------
+    // allocate Rows rows, each row is a pointer to int
+    int** mapa2 = (int**)malloc(altura * sizeof(int*));
+
+    // for each row allocate Cols ints
+    for (int row = 0; row < altura; row++) {
+        mapa2[row] = (int*)malloc(largura * sizeof(int));
+    }
+
+    // ------ Alocando Mapa 3 ------
+    // allocate Rows rows, each row is a pointer to int
+    int** mapa3 = (int**)malloc(altura * sizeof(int*));
+
+    // for each row allocate Cols ints
+    for (int row = 0; row < altura; row++) {
+        mapa3[row] = (int*)malloc(largura * sizeof(int));
+    }
+
+    // ------ Alocando Mapa 4 ------
+    // allocate Rows rows, each row is a pointer to int
+    int** mapa4 = (int**)malloc(altura * sizeof(int*));
+
+    // for each row allocate Cols ints
+    for (int row = 0; row < altura; row++) {
+        mapa4[row] = (int*)malloc(largura * sizeof(int));
+    }
 
     // Setando todos os espaços para 0
     for (int i = 0; i < altura; i++) {
