@@ -12,7 +12,10 @@
 //Variaveis globais
 
 ALLEGRO_SAMPLE* trilha_sonora = NULL;
+ALLEGRO_SAMPLE* passos = NULL;
+
 ALLEGRO_SAMPLE_INSTANCE* inst_trilha_sonora = NULL;  //instanciar evita conflitos e permite functions a mais
+ALLEGRO_SAMPLE_INSTANCE* inst_passos = NULL;
 
 enum KEYS { UP, DOWN, LEFT, RIGHT };
 
@@ -58,36 +61,52 @@ int main(void)
 		inst_trilha_sonora = al_create_sample_instance(trilha_sonora); //instancia ela
 		al_attach_sample_instance_to_mixer(inst_trilha_sonora, al_get_default_mixer()); //faz com que ela fique num padrao ja definido poupando trabalho
 		al_set_sample_instance_playmode(inst_trilha_sonora, ALLEGRO_PLAYMODE_LOOP); //coloca a soundtrack em loop
-		al_set_sample_instance_gain(inst_trilha_sonora, 2); // VOLUME
+		al_set_sample_instance_gain(inst_trilha_sonora, 0.4); // VOLUME
+
+		passos = al_load_sample("passos.wav");
+		inst_passos = al_create_sample_instance(passos);
+		al_attach_sample_instance_to_mixer(inst_passos, al_get_default_mixer());
 
 		al_register_event_source(event_queue, al_get_keyboard_event_source());
 		al_register_event_source(event_queue, al_get_display_event_source(display));
+		al_set_sample_instance_gain(inst_passos, 0.8);
 
+		al_play_sample_instance(inst_trilha_sonora); //starta a musica
 		
+
 		while (!done)			
 		{
 			ALLEGRO_EVENT ev;									//evento das teclas para MOVIMENTAÇÃO
 			al_wait_for_event(event_queue, &ev);
-			al_play_sample_instance(inst_trilha_sonora);
+			
 			if (ev.type == ALLEGRO_EVENT_KEY_DOWN)
 			{
 				switch (ev.keyboard.keycode)
 				{
 				case ALLEGRO_KEY_UP:
 					keys[UP] = true;
+					al_stop_sample_instance(inst_passos);
+					al_play_sample_instance(inst_passos);
 				break;
 
 				case ALLEGRO_KEY_DOWN:
 					keys[DOWN] = true;
+					al_stop_sample_instance(inst_passos);
+					al_play_sample_instance(inst_passos);
 					break;
 
 				case ALLEGRO_KEY_LEFT:
 					keys[LEFT] = true;
+					al_stop_sample_instance(inst_passos);
+					al_play_sample_instance(inst_passos);
 					break;
 
 				case ALLEGRO_KEY_RIGHT:
 					keys[RIGHT] = true;
+					al_stop_sample_instance(inst_passos);
+					al_play_sample_instance(inst_passos);
 					break;
+					
 				}
 			}
 
@@ -142,6 +161,8 @@ int main(void)
 
 		al_destroy_sample(trilha_sonora);
 		al_destroy_sample_instance(inst_trilha_sonora);
+		al_destroy_sample(passos);
+		al_destroy_sample_instance(inst_passos);
 		al_destroy_display(display);                            
 
 		return 0;
