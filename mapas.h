@@ -43,7 +43,7 @@ int **geraMapas(int mapa) {
         mapa4[row] = (int*)malloc(largura * sizeof(int));
     }
 
-    // Setando todos os espaços para 0
+    // Setando todos os espaços para 0 (Chão / Nada) 
     for (int i = 0; i < altura; i++) {
         for (int j = 0; j < largura; j++) {
             mapa1[i][j] = 0;
@@ -58,14 +58,18 @@ int **geraMapas(int mapa) {
         for (int i = 0; i < altura; i++) {
             for (int j = 0; j < largura; j++) {
                 if ((i == 2 && j < 15 && j > 2) || (i == 8 && j < 20 && j > 14) || (i == 12 && j < 20 && j > 1)) {
+                    // Parede frontal
                     mapa1[i][j] = 1;
                 }
                 else if ((j == 2 && i < 12 && i > 2) || (j == 15 && i < 8 && i > 2)) {
+                    // Parede lateral
                     mapa1[i][j] = 3;
                 }
                 else if ((j == 19 && i < 12 && i > 8)) {
+                    // Portas
                     mapa1[i][j] = 5;
                 }
+                // Quinas de parede
                 mapa1[2][2] = 2;
                 mapa1[2][15] = 2;
             }
@@ -135,6 +139,10 @@ int **geraMapas(int mapa) {
         }
         return mapa4;
     }
+    free(mapa1);
+    free(mapa2);
+    free(mapa3);
+    free(mapa4);
     // Printando o mapa
     /*for (int i = 0; i < altura; i++) {
         for (int j = 0; j < largura; j++) {
