@@ -34,7 +34,7 @@ int main(void)
 	int tileSize = 32;
 
 	// Gera mapas
-	int **map = geraMapas(1);
+	int **map = geraMapas(4);
 
 	bool keys[4] = { false, false, false, false };
 
@@ -56,6 +56,7 @@ int main(void)
 		al_install_audio();
 		al_init_acodec_addon();
 		al_init_primitives_addon();
+		al_init_image_addon();
 		al_install_keyboard();
 		al_reserve_samples(15);						//"quantos audios vai ter no jogo"
 
@@ -136,20 +137,29 @@ int main(void)
 				done = true;                            
 			}
 
-			pos_y -= keys[UP] * 10;
-			pos_y += keys[DOWN] * 10;
-			pos_x -= keys[LEFT] * 10;
-			pos_x += keys[RIGHT] * 10;
+			pos_y -= keys[UP] * 20;
+			pos_y += keys[DOWN] * 20;
+			pos_x -= keys[LEFT] * 20;
+			pos_x += keys[RIGHT] * 20;
 
 
 			al_draw_filled_rectangle(pos_x, pos_y, pos_x + 32, pos_y + 32, al_map_rgb(200, 0, 055));  //desenho do SQUARE, posição e cor]
 
-			for (int i = 0; i < mapSize; i++) {
-				al_draw_bitmap_region(bgSheet, tileSize * *map[i], 0, tileSize, tileSize, 0, 0, 0); // função(ponteiro, ponto inicial em x, ponto inicial em y
-			} // O ERRO ESTÁ AQUI
+			int linha = 0;
+			int coluna = 0;
+
+			for (int i = 0; i < 15; i++) {
+				for (int j = 0; j < 20; j++) {
+					int val = map[i][j];
+					al_draw_bitmap_region(bgSheet, tileSize * val, tileSize * val, tileSize, tileSize, coluna, linha, 0); // função(ponteiro, ponto inicial em x, ponto inicial em y
+					coluna += 32;
+				} // O ERRO ESTÁ AQUI
+				linha += 32;
+				coluna = 0;
+			}
 
 			al_flip_display();
-			al_clear_to_color(al_map_rgb(192, 192, 192));
+			al_clear_to_color(al_map_rgb(0, 0, 0));
 		}
 
 	//----------------------------------------
