@@ -8,6 +8,7 @@
 #include <allegro5/allegro_audio.h>
 #include <allegro5/allegro_acodec.h>
 #include <allegro5\allegro_image.h>
+#include <../../../../../Dialogo.h>
 
 //__________________________________________
 //Variaveis globais
