@@ -32,7 +32,7 @@ int main(void)
 	int tileSize = 32;
 
 	// Gera mapas
-	int **map = geraMapas(3);
+	int **map = geraMapas(1);
 
 	bool keys[4] = {false, false, false, false};
 
@@ -41,13 +41,17 @@ int main(void)
 	ALLEGRO_EVENT_QUEUE *event_queue = NULL;
 	ALLEGRO_BITMAP* bgSheet = NULL;
 
-	if (!al_init())                                          //iniciando allegro
+	if (!al_init()) {                                        //Teste iniciação allegro
+		fprintf(stderr, "Falha ao iniciar o Allegro\n");
 		return -1;
+	}
 		  
 	display = al_create_display(width, height);              //criando display
 		 
-	if (!display)                                            //teste display
+	if (!display) {											 //teste display
+		fprintf(stderr, "Falha ao iniciar o display\n");
 		return -1;
+	}
 
 	// ------ Inicializacao de ADDONS e INSTALACOES ------
 	al_install_audio();
@@ -57,16 +61,27 @@ int main(void)
 	al_install_keyboard();
 	al_reserve_samples(15);									//"quantos audios vai ter no jogo"
 
+
+	// ------ Configuração do nome do display ------
+	al_set_window_title(display, "Exult");
+
 	bgSheet = al_load_bitmap("Full.png");					// Puxando os tiles
 
 	// ------ Criação de filas ------
 	event_queue = al_create_event_queue();
+	if (!event_queue) {
+		fprintf(stderr, "Falha ao criar fila de evento\n");	// Teste fila de eventos
+		al_destroy_display(display);
 
+		return -1;
+	}
+
+	// ------ Trilha sonora ------
 	trilha_sonora = al_load_sample("trilha-sonora.wav"); //carrega qual arquivo vai tocar
 	inst_trilha_sonora = al_create_sample_instance(trilha_sonora); //instancia ela
 	al_attach_sample_instance_to_mixer(inst_trilha_sonora, al_get_default_mixer()); //faz com que ela fique num padrao ja definido poupando trabalho
 	al_set_sample_instance_playmode(inst_trilha_sonora, ALLEGRO_PLAYMODE_LOOP); //coloca a soundtrack em loop
-	al_set_sample_instance_gain(inst_trilha_sonora, 2); // VOLUME trilha sonora
+	al_set_sample_instance_gain(inst_trilha_sonora, 0.25); // VOLUME trilha sonora
 
 	al_register_event_source(event_queue, al_get_keyboard_event_source());
 	al_register_event_source(event_queue, al_get_display_event_source(display));
@@ -140,17 +155,23 @@ int main(void)
 		pos_x -= keys[LEFT] * 16;
 		pos_x += keys[RIGHT] * 16;
 
-		al_draw_filled_rectangle(pos_x - 16, pos_y - 16, pos_x + 16, pos_y + 16, al_map_rgb(200, 0, 055));  //desenho do SQUARE, posição e cor
+		int sourceY = 0;
+		int sourceX = 0;
 
 		for (int i = 0; i < 15; i++) {
 			for (int j = 0; j < 20; j++) {
 				int val = map[i][j];
-				al_draw_bitmap_region(bgSheet, tileSize * val, tileSize * val, tileSize, tileSize, coluna, linha, 0);
+				sourceX = val / 10;
+				sourceY = val % 10;
+				al_draw_bitmap_region(bgSheet, tileSize * sourceX, tileSize * sourceY, tileSize, tileSize, coluna, linha, 0);
 				coluna += 32;
 			}
 			linha += 32;
 			coluna = 0;
 		}
+
+		al_draw_filled_rectangle(pos_x - 16, pos_y - 16, pos_x + 16, pos_y + 16, al_map_rgb(200, 0, 055));  //desenho do SQUARE, posição e cor
+
 		al_flip_display();
 		al_clear_to_color(al_map_rgb(0, 0, 0));
 	}
