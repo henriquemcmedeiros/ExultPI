@@ -2,6 +2,7 @@
 #include <stdlib.h>
 
 int** geraMapas(int mapa);
+void limparMapas(int** mapa);
 
 // Declaração da altura e largura fixas com o padrão 32bits
 const int altura = 15;
@@ -37,16 +38,8 @@ int** geraMapas(int mapa) {
             }
         }
         return mapa1;
-        fclose("mapas/mapa1.txt");
-
-        // ------ Limpando Memória ------
-        // Limpando memória do mapa1 
-        for (int row = 0; row < altura; row++) {
-            free(mapa1[row]);
-        }
-        free(mapa1);
     }
-    if (mapa == 2) {
+    else if (mapa == 2) {
         errno_t err = fopen_s(&file, "mapas/mapa2.txt", "r");
 
         if (err != 0) {
@@ -73,15 +66,8 @@ int** geraMapas(int mapa) {
             }
         }
         return mapa2;
-        fclose("mapas/mapa2.txt");
-
-        // Limpando memória do mapa2 
-        for (int row = 0; row < altura; row++) {
-            free(mapa2[row]);
-        }
-        free(mapa2);
     }
-    if (mapa == 3) {
+    else if (mapa == 3) {
         errno_t err = fopen_s(&file, "mapas/mapa3.txt", "r");
 
         if (err != 0) {
@@ -108,15 +94,8 @@ int** geraMapas(int mapa) {
             }
         }
         return mapa3;
-        fclose("mapas/mapa3.txt");
-
-        // Limpando memória do mapa3 
-        for (int row = 0; row < altura; row++) {
-            free(mapa3[row]);
-        }
-        free(mapa3);
     }
-    if (mapa == 4) {
+    else if (mapa == 4) {
         errno_t err = fopen_s(&file, "mapas/mapa4.txt", "r");
 
         if (err != 0) {
@@ -143,41 +122,21 @@ int** geraMapas(int mapa) {
             }
         }
         return mapa4;
-        fclose("mapas/mapa4.txt");
-
-        // Limpando memória do mapa4
-        for (int row = 0; row < altura; row++) {
-            free(mapa4[row]);
-        }
-        free(mapa4);
+    }
+    else {
+        fprintf(stderr, "Nao foi possivel iniciar o mapa\n");
+        return -1;
     }
 }
 
-/*void limparMapas() {
+void limparMapas(int** mapa) {
     // ------ Limpando Memória ------
-    // Limpando memória do mapa1 
+    // Limpando memória do mapa
     for (int row = 0; row < altura; row++) {
-        free(mapa1[row]);
+        free(mapa[row]);
     }
-    free(mapa1);
-
-    // Limpando memória do mapa1 
-    for (int row = 0; row < altura; row++) {
-        free(mapa2[row]);
-    }
-    free(mapa2);
-
-    // Limpando memória do mapa1 
-    for (int row = 0; row < altura; row++) {
-        free(mapa3[row]);
-    }
-    free(mapa3);
-
-    // Limpando memória do mapa1 
-    for (int row = 0; row < altura; row++) {
-        free(mapa4[row]);
-    }
-    free(mapa4);
+    free(mapa);
+}
 
     // Printando o mapa
     /*for (int i = 0; i < altura; i++) {

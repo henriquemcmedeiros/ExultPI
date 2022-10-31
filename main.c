@@ -29,9 +29,7 @@ int main(void)
 	// Mapa
 	int mapColumns = 20;
 	int tileSize = 32;
-
-	// Gera mapas
-	int **map = geraMapas(2);
+	int escolhaMapa = 1;
 
 	bool keys[4] = {false, false, false, false};
 
@@ -64,7 +62,7 @@ int main(void)
 	// ------ Configuração do nome do display ------
 	al_set_window_title(display, "Exult");
 
-	bgSheet = al_load_bitmap("Full.png");					// Puxando os tiles
+	bgSheet = al_load_bitmap("assets/Full.png");			// Puxando os tiles
 
 	// ------ Criação de filas ------
 	event_queue = al_create_event_queue();
@@ -76,7 +74,7 @@ int main(void)
 	}
 
 	// ------ Trilha sonora ------
-	trilha_sonora = al_load_sample("trilha-sonora.wav"); //carrega qual arquivo vai tocar
+	trilha_sonora = al_load_sample("Audios/Trilha sonora/trilha-sonora.wav"); //carrega qual arquivo vai tocar
 	inst_trilha_sonora = al_create_sample_instance(trilha_sonora); //instancia ela
 	al_attach_sample_instance_to_mixer(inst_trilha_sonora, al_get_default_mixer()); //faz com que ela fique num padrao ja definido poupando trabalho
 	al_set_sample_instance_playmode(inst_trilha_sonora, ALLEGRO_PLAYMODE_LOOP); //coloca a soundtrack em loop
@@ -92,8 +90,13 @@ int main(void)
 		al_wait_for_event(event_queue, &ev);
 		al_play_sample_instance(inst_trilha_sonora);
 
+		// Endereço dos tiles no display
 		int linha = 0;
 		int coluna = 0;
+
+		// Endereço do tileset
+		int sourceY = 0;
+		int sourceX = 0;
 
 		if (ev.type == ALLEGRO_EVENT_KEY_DOWN)
 		{
@@ -143,7 +146,6 @@ int main(void)
 
 			}
 		}
-
 		else if (ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE)  //para fechar o display ao apertar o X
 		{
 			done = true;                            
@@ -154,9 +156,50 @@ int main(void)
 		pos_x -= keys[LEFT] * 16;
 		pos_x += keys[RIGHT] * 16;
 
-		int sourceY = 0;
-		int sourceX = 0;
+		int XMAX = 656;
+		int XMIN = -16;
+		int YMAX = 496;
+		int YMIN = -16;
 
+		if (escolhaMapa == 1 && pos_x >= XMAX) {
+			escolhaMapa = 2;
+			pos_x = 16;
+			pos_y = 336;
+		}
+		if (escolhaMapa == 2 && pos_x <= XMIN) {
+			escolhaMapa = 1;
+			pos_x = 624;
+			pos_y = 336;
+		}
+		else if (escolhaMapa == 2 && pos_y >= YMAX) {
+			escolhaMapa = 3;
+			pos_x = 496;
+			pos_y = 16;
+		}
+		if (escolhaMapa == 3 && pos_y <= YMIN) {
+			escolhaMapa = 2;
+			pos_x = 496;
+			pos_y = 464;
+		}
+		else if (escolhaMapa == 3 && pos_x <= XMIN) {
+			escolhaMapa = 4;
+			pos_x = 624;
+			pos_y = 368;
+		}
+		if (escolhaMapa == 4 && pos_x >= XMAX) {
+			escolhaMapa = 3;
+			pos_x = 16;
+			pos_y = 368;
+		}
+
+		if (escolhaMapa == 4 && pos_y == 336 && pos_x == 240) {
+			done = true;
+		}
+
+		// Gera mapa1 como padrão
+		int** map = geraMapas(escolhaMapa);
+
+		// Desenha os mapas na tela
 		for (int i = 0; i < 15; i++) {
 			for (int j = 0; j < 20; j++) {
 				int val = map[i][j];
@@ -173,13 +216,14 @@ int main(void)
 
 		al_flip_display();
 		al_clear_to_color(al_map_rgb(0, 0, 0));
+		limparMapas(map);
 	}
 
 	// ------ FINALIZACOES e DESTROYS ------
 	al_destroy_bitmap(bgSheet);
 	al_destroy_sample(trilha_sonora);
 	al_destroy_sample_instance(inst_trilha_sonora);
-	al_destroy_display(display);    
+	al_destroy_display(display);
 
 	return 0;
 }
