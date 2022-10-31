@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int **geraMapas(int mapa);
+int** geraMapas(int mapa);
 
 // Declaração da altura e largura fixas com o padrão 32bits
 const int altura = 15;
@@ -9,12 +9,11 @@ const int largura = 20;
 
 int** geraMapas(int mapa) {
     FILE* file;
-    errno_t err;
 
     if (mapa == 1) {
-        err = fopen_s(&file, "mapa1.txt", "r");
-
-        if (err == NULL) {
+        errno_t err = fopen_s(&file, "mapas/mapa1.txt", "r");
+  
+        if (err != 0) {
             fprintf(stderr, "Nao foi possivel abrir o arquivo\n");
             exit(0);
         }
@@ -31,14 +30,14 @@ int** geraMapas(int mapa) {
         // Coloca o conteudo do arquivo TXT dentro da matriz mapa1
         for (int row = 0; row < altura; row++) {
             for (int col = 0; col < largura; col++) {
-                if (fscanf_s(err, "%d", &mapa1[row][col]) != 1) {
+                if (fscanf_s(file, "%d", &mapa1[row][col]) != 1) {
                     fprintf(stderr, "error reading mapa1[%d][%d]\n", row, col);
                     return 0;
                 }
             }
         }
         return mapa1;
-        fclose("mapa1.txt");
+        fclose("mapas/mapa1.txt");
 
         // ------ Limpando Memória ------
         // Limpando memória do mapa1 
@@ -48,10 +47,10 @@ int** geraMapas(int mapa) {
         free(mapa1);
     }
     if (mapa == 2) {
-        file = fopen_s(&file, "mapas/mapa2.txt", "r");
+        errno_t err = fopen_s(&file, "mapas/mapa2.txt", "r");
 
-        if (file == NULL) {
-            fprintf(stderr, "Não foi possível abrir o arquivo\n");
+        if (err != 0) {
+            fprintf(stderr, "Nao foi possivel abrir o arquivo\n");
             exit(0);
         }
 
@@ -83,9 +82,9 @@ int** geraMapas(int mapa) {
         free(mapa2);
     }
     if (mapa == 3) {
-        file = fopen_s(&file, "mapas/mapa3.txt", "r");
+        errno_t err = fopen_s(&file, "mapas/mapa3.txt", "r");
 
-        if (file == NULL) {
+        if (err != 0) {
             fprintf(stderr, "Não foi possível abrir o arquivo\n");
             exit(0);
         }
@@ -118,10 +117,10 @@ int** geraMapas(int mapa) {
         free(mapa3);
     }
     if (mapa == 4) {
-        file = fopen_s(&file, "mapas/mapa4.txt", "r");
+        errno_t err = fopen_s(&file, "mapas/mapa4.txt", "r");
 
-        if (file == NULL) {
-            fprintf(stderr, "Não foi possível abrir o arquivo\n");
+        if (err != 0) {
+            fprintf(stderr, "Nao foi possivel abrir o arquivo\n");
             exit(0);
         }
 

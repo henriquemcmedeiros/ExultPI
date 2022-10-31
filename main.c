@@ -9,8 +9,7 @@
 #include <allegro5/allegro_acodec.h>
 #include <../../../../../mapas.h>
 
-//_________________
-//Variaveis globais
+// ------ Variaveis globais ------
 ALLEGRO_SAMPLE* trilha_sonora = NULL;
 ALLEGRO_SAMPLE_INSTANCE* inst_trilha_sonora = NULL;  //instanciar evita conflitos e permite functions a mais
 
@@ -32,13 +31,13 @@ int main(void)
 	int tileSize = 32;
 
 	// Gera mapas
-	int **map = geraMapas(1);
+	int **map = geraMapas(2);
 
 	bool keys[4] = {false, false, false, false};
 
 	// Váriáveis do allegro
-	ALLEGRO_DISPLAY *display = NULL;
-	ALLEGRO_EVENT_QUEUE *event_queue = NULL;
+	ALLEGRO_DISPLAY* display = NULL;
+	ALLEGRO_EVENT_QUEUE* event_queue = NULL;
 	ALLEGRO_BITMAP* bgSheet = NULL;
 
 	if (!al_init()) {                                        //Teste iniciação allegro
