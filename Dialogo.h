@@ -1,4 +1,42 @@
 
+int dialogdoor() {
+	bool done = false;
+
+	ALLEGRO_EVENT_QUEUE* event_queue = NULL;
+	ALLEGRO_BITMAP* image = NULL;
+
+	al_install_keyboard();
+	al_init_image_addon();
+
+	image = al_load_bitmap("Bitmapsdialogue/dialdoor.jpg");
+
+	event_queue = al_create_event_queue();
+	al_register_event_source(event_queue, al_get_keyboard_event_source());
+
+
+	while (!done)
+	{
+		ALLEGRO_EVENT ev;
+		al_wait_for_event(event_queue, &ev);
+
+		if (ev.type == ALLEGRO_EVENT_KEY_DOWN)
+		{
+			switch (ev.keyboard.keycode)
+			{
+			case ALLEGRO_KEY_F:
+				done = true;
+				break;
+			}
+		}
+		al_draw_bitmap(image, 27, 300, 0);
+		al_flip_display();
+		al_clear_to_color(al_map_rgb(0, 0, 0));
+	}
+
+	al_destroy_bitmap(image);
+	al_destroy_event_queue(event_queue);
+}
+
 int dialogo() {
 	bool done = false;
 	bool done2 = false;
