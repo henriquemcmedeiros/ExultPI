@@ -7,80 +7,107 @@
 #include <allegro5/allegro_primitives.h>
 #include <allegro5/allegro_audio.h>
 #include <allegro5/allegro_acodec.h>
+#include <allegro5/allegro_image.h>
 
 //__________________________________________
 //Variaveis globais
 
 ALLEGRO_SAMPLE* trilha_sonora = NULL;
-ALLEGRO_SAMPLE* passos = NULL;
-
 ALLEGRO_SAMPLE_INSTANCE* inst_trilha_sonora = NULL;  //instanciar evita conflitos e permite functions a mais
-ALLEGRO_SAMPLE_INSTANCE* inst_passos = NULL;
+enum KEYS { DOWN, UP, RIGHT, LEFT };
 
-enum KEYS { UP, DOWN, LEFT, RIGHT };
+
+
 
 int main(void)
 {
 
-	int width = 640;
-	int height = 480;
 
-	bool done = false;	
-	int  pos_x = width / 2;
-	int pos_y = height / 2;                        //declarando variáveis
+	int direcao = UP;
+	int width = 600;
+	int height = 480;
+	int sourceX = 0, sourceY = 0;
+	bool done = false, draw = true, active = false;
+
+
+	float x = width / 2;
+	float y = height / 2;
+
+
+
+
+
+	//declarando variáveis
 
 	bool keys[4] = { false, false, false, false };
 
-		ALLEGRO_DISPLAY *display = NULL;
-		ALLEGRO_EVENT_QUEUE* event_queue = NULL;
+	ALLEGRO_DISPLAY* display = NULL;
+	ALLEGRO_EVENT_QUEUE* event_queue = NULL;
 
-		if (!al_init())                                          //iniciando allegro
-			return -1;
-		  
-		display = al_create_display(width, height);              //criando display
-		 
-		if (!display)                                            //teste display
-			return -1;
+	const float FPS = 50.0;
 
-//-------------------------------------
-		//inicializacao de ADDONS e INSTALACOES
+	if (!al_init())                                          //iniciando allegro
+		return -1;
 
-		al_install_audio();
-		al_init_acodec_addon();
-		al_init_primitives_addon();
-		al_install_keyboard();
+	display = al_create_display(width, height);              //criando display
 
-		al_reserve_samples(15);  //"quantos audios vai ter no jogo"
+	if (!display)                                            //teste display
+		return -1;
 
-//-------------------------------------
-		//criacao de filas
+	//-------------------------------------
+			//inicializacao de ADDONS e INSTALACOES
 
-		event_queue = al_create_event_queue();
+	al_install_audio();
+	al_init_acodec_addon();
+	al_init_primitives_addon();
+	al_install_keyboard();
+	al_init_image_addon(); // iniciando imagem
+	al_reserve_samples(15);  //"quantos audios vai ter no jogo"
 
-		trilha_sonora = al_load_sample("trilha-sonora.wav"); //carrega qual arquivo vai tocar
-		inst_trilha_sonora = al_create_sample_instance(trilha_sonora); //instancia ela
-		al_attach_sample_instance_to_mixer(inst_trilha_sonora, al_get_default_mixer()); //faz com que ela fique num padrao ja definido poupando trabalho
-		al_set_sample_instance_playmode(inst_trilha_sonora, ALLEGRO_PLAYMODE_LOOP); //coloca a soundtrack em loop
-		al_set_sample_instance_gain(inst_trilha_sonora, 0.4); // VOLUME
+	ALLEGRO_BITMAP* Player = al_load_bitmap("player.PNG"); /// alocando memoria e inserindo dados 
 
-		passos = al_load_sample("passos.wav");
-		inst_passos = al_create_sample_instance(passos);
-		al_attach_sample_instance_to_mixer(inst_passos, al_get_default_mixer());
+	ALLEGRO_TIMER* timer = al_create_timer(1.0 / FPS);
 
-		al_register_event_source(event_queue, al_get_keyboard_event_source());
-		al_register_event_source(event_queue, al_get_display_event_source(display));
-		al_set_sample_instance_gain(inst_passos, 0.8);
+	ALLEGRO_KEYBOARD_STATE keyState;
 
-		al_play_sample_instance(inst_trilha_sonora); //starta a musica
-		
+	//-------------------------------------
+			//criacao de filas
 
-		while (!done)			
+	event_queue = al_create_event_queue();
+
+	trilha_sonora = al_load_sample("trilha-sonora.wav"); //carrega qual arquivo vai tocar
+	inst_trilha_sonora = al_create_sample_instance(trilha_sonora); //instancia ela
+	al_attach_sample_instance_to_mixer(inst_trilha_sonora, al_get_default_mixer()); //faz com que ela fique num padrao ja definido poupando trabalho
+	al_set_sample_instance_playmode(inst_trilha_sonora, ALLEGRO_PLAYMODE_LOOP); //coloca a soundtrack em loop
+	al_set_sample_instance_gain(inst_trilha_sonora, 2); // VOLUME
+	al_register_event_source(event_queue, al_get_timer_event_source(timer));
+	al_register_event_source(event_queue, al_get_keyboard_event_source());
+	al_register_event_source(event_queue, al_get_display_event_source(display));
+
+	al_start_timer(timer);
+
+	while (!done)
+	{
+
+
+		ALLEGRO_EVENT ev;									//evento das teclas para MOVIMENTAÇÃO
+		al_wait_for_event(event_queue, &ev);
+		al_play_sample_instance(inst_trilha_sonora);
+		al_get_keyboard_state(&keyState);
+
+		if (ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE)  //para fechar o display ao apertar o X
 		{
-			ALLEGRO_EVENT ev;									//evento das teclas para MOVIMENTAÇÃO
-			al_wait_for_event(event_queue, &ev);
-			
-			if (ev.type == ALLEGRO_EVENT_KEY_DOWN)
+			done = true;
+		}
+
+
+		if (ev.type == ALLEGRO_EVENT_KEY_DOWN)
+		{
+			active = true;
+			draw = true;
+			switch (ev.keyboard.keycode)
 			{
+<<<<<<< Updated upstream
 				switch (ev.keyboard.keycode)
 				{
 				case ALLEGRO_KEY_W:
@@ -108,10 +135,40 @@ int main(void)
 					break;
 					
 				}
+=======
+			case ALLEGRO_KEY_DOWN:
+				keys[DOWN] = true;
+				direcao = DOWN;
+
+				break;
+
+			case ALLEGRO_KEY_UP:
+				keys[UP] = true;
+				direcao = UP;
+
+				break;
+
+			case ALLEGRO_KEY_RIGHT:
+				keys[RIGHT] = true;
+				direcao = RIGHT;
+
+				break;
+
+			case ALLEGRO_KEY_LEFT:
+				keys[LEFT] = true;
+				direcao = LEFT;
+
+				break;
+			default:
+				active = false;
+				draw = false;
+>>>>>>> Stashed changes
 			}
 
-				else if (ev.type == ALLEGRO_EVENT_KEY_UP)
+
+			if (active)
 			{
+<<<<<<< Updated upstream
 				switch (ev.keyboard.keycode)
 				{
 				case ALLEGRO_KEY_W:
@@ -129,41 +186,78 @@ int main(void)
 				case ALLEGRO_KEY_D:
 					keys[RIGHT] = false;
 					break;
-
-				case ALLEGRO_KEY_ESCAPE:
-					done = true;
-					break;
-
-				}
+=======
+				sourceX += al_get_bitmap_width(Player) / 3;
 			}
+			else
+				sourceX = 0;
 
-				else if (ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE)  //para fechar o display ao apertar o X
+
+			if (sourceX >= al_get_bitmap_width(Player))
+				sourceX = 0;
+		}
+
+>>>>>>> Stashed changes
+
+
+		else if (ev.type == ALLEGRO_EVENT_KEY_UP)
+		{
+
+
+			switch (ev.keyboard.keycode)
 			{
-				done = true;                            
+			case ALLEGRO_KEY_DOWN:
+				keys[DOWN] = false;
+				break;
+
+			case ALLEGRO_KEY_UP:
+				keys[UP] = false;
+				break;
+
+			case ALLEGRO_KEY_RIGHT:
+				keys[RIGHT] = false;
+				break;
+
+			case ALLEGRO_KEY_LEFT:
+				keys[LEFT] = false;
+				break;
+
+			case ALLEGRO_KEY_ESCAPE:
+				done = true;
+				break;
+
 			}
 
-			pos_y -= keys[UP] * 10;
-			pos_y += keys[DOWN] * 10;
-			pos_x -= keys[LEFT] * 10;
-			pos_x += keys[RIGHT] * 10;
-
-
-			al_draw_filled_rectangle(pos_x, pos_y, pos_x + 30, pos_y + 30, al_map_rgb(200, 0, 055));  //desenho do SQUARE, posição e cor
-			al_flip_display();
-			al_clear_to_color(al_map_rgb(192, 192, 192));
-
-			
 
 		}
 
-//----------------------------------------
-		//FINALIZACOES e DESTROYS
 
-		al_destroy_sample(trilha_sonora);
-		al_destroy_sample_instance(inst_trilha_sonora);
-		al_destroy_sample(passos);
-		al_destroy_sample_instance(inst_passos);
-		al_destroy_display(display);                            
 
-		return 0;
+		if (draw) {
+
+
+			// al_draw_bitmap(Player, x, y, NULL);
+			al_draw_bitmap_region(Player, sourceX, direcao * al_get_bitmap_height(Player) / 4, 180, 279, x, y, NULL);
+			al_flip_display();
+			al_clear_to_color(al_map_rgb(192, 192, 192));
+		}
+
+		y -= keys[UP] * 10;
+		y += keys[DOWN] * 10;
+		x -= keys[LEFT] * 10;
+		x += keys[RIGHT] * 10;
+
+	}
+
+	// desenhar sprite 
+	//al_draw_filled_rectangle(pos_x, pos_y, pos_x + 30, pos_y + 30, al_map_rgb(200, 0, 055));  //desenho do SQUARE, posição e cor
+	//----------------------------------------
+	//FINALIZACOES e DESTROYS
+
+	al_destroy_sample(trilha_sonora);
+	al_destroy_sample_instance(inst_trilha_sonora);
+	al_destroy_display(display);
+	al_destroy_bitmap(Player); // fecha bitmap 
+
+	return 0;
 }
