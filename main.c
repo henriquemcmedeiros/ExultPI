@@ -83,6 +83,7 @@ int main(void)
 	al_register_event_source(event_queue, al_get_keyboard_event_source());
 	al_register_event_source(event_queue, al_get_display_event_source(display));
 
+	int** map = geraMapas(escolhaMapa);
 	
 	while (!done)			
 	{
@@ -151,10 +152,10 @@ int main(void)
 			done = true;                            
 		}
 
-		pos_y -= keys[UP] * 16;
-		pos_y += keys[DOWN] * 16;
-		pos_x -= keys[LEFT] * 16;
-		pos_x += keys[RIGHT] * 16;
+		pos_y -= keys[UP] * 4;
+		pos_y += keys[DOWN] * 4;
+		pos_x -= keys[LEFT] * 4;
+		pos_x += keys[RIGHT] * 4;
 
 		int XMAX = 656;
 		int XMIN = -16;
@@ -163,31 +164,37 @@ int main(void)
 
 		if (escolhaMapa == 1 && pos_x >= XMAX) {
 			escolhaMapa = 2;
+			map = geraMapas(escolhaMapa);
 			pos_x = 16;
 			pos_y = 336;
 		}
 		if (escolhaMapa == 2 && pos_x <= XMIN) {
 			escolhaMapa = 1;
+			map = geraMapas(escolhaMapa);
 			pos_x = 624;
 			pos_y = 336;
 		}
 		else if (escolhaMapa == 2 && pos_y >= YMAX) {
 			escolhaMapa = 3;
+			map = geraMapas(escolhaMapa);
 			pos_x = 496;
 			pos_y = 16;
 		}
 		if (escolhaMapa == 3 && pos_y <= YMIN) {
 			escolhaMapa = 2;
+			map = geraMapas(escolhaMapa);
 			pos_x = 496;
 			pos_y = 464;
 		}
 		else if (escolhaMapa == 3 && pos_x <= XMIN) {
 			escolhaMapa = 4;
+			map = geraMapas(escolhaMapa);
 			pos_x = 624;
 			pos_y = 368;
 		}
 		if (escolhaMapa == 4 && pos_x >= XMAX) {
 			escolhaMapa = 3;
+			map = geraMapas(escolhaMapa);
 			pos_x = 16;
 			pos_y = 368;
 		}
@@ -197,7 +204,15 @@ int main(void)
 		}
 
 		// Gera mapa1 como padrão
-		int** map = geraMapas(escolhaMapa);
+		
+
+		/*for (int i = 0; i < 15; i++) {
+			for (int j = 0; j < 20; j++) {
+				printf("%d", map[i][j]);
+			}
+			printf("\n");
+		}*/
+
 
 		// Desenha os mapas na tela
 		for (int i = 0; i < 15; i++) {
@@ -216,8 +231,8 @@ int main(void)
 
 		al_flip_display();
 		al_clear_to_color(al_map_rgb(0, 0, 0));
-		limparMapas(map);
 	}
+	limparMapas(map);
 
 	// ------ FINALIZACOES e DESTROYS ------
 	al_destroy_bitmap(bgSheet);
