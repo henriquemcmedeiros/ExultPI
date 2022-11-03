@@ -165,40 +165,48 @@ int main(void)
 		ptr->pos_y -= keys[UP] * velocidade;
 		ptr->pos_y += keys[DOWN] * velocidade;
 		ptr->pos_x -= keys[LEFT] * velocidade;
-		ptr->pos_x += keys[RIGHT] * velocidade;
+		ptr->pos_x += keys[RIGHT] * velocidade;	
 
-		int aux = (ptr->pos_x / 32);
-		int auy = (ptr->pos_y / 32);
-
-		int valU = 67;
-		int valD = 67;
-		int valL = 67;
-		int valR = 67;
-
-		if (ptr->pos_y > 32 && ptr->pos_y < height - 32 && auy < 15 && aux < 20) {
-			valU = ptr->map[auy][aux];
-			valD = ptr->map[auy + 1][aux];
+		// ------ Colisão ------
+		// ------ MAPA  1 ------
+		if (ptr->escolhaMapa == 1) {
+			// Parede direita
+			if (ptr->pos_y <= 280) {
+				ptr->pos_x = min(480, ptr->pos_x);
+			}
+			// Parede esquerda
+			ptr->pos_x = max(96, ptr->pos_x);
+			// Parede superior e inferior
+			ptr->pos_y = max(96, min(352, ptr->pos_y));
+			if (ptr->pos_x >= 484) {
+				// Parede superior corredor
+				ptr->pos_y = max(288, ptr->pos_y);
+			}
 		}
-		if (ptr->pos_x > 32 && ptr->pos_x < width - 32 && auy < 15 && aux < 20) {
-			valL = ptr->map[auy][aux];
-			valR = ptr->map[auy][aux + 1];
-		}
-
-		if (valU != 67 && direcao == UP) {
-			// UP
-			ptr->pos_y += velocidade;
-		}
-		if (valD != 67 && direcao == DOWN) {
-			// DOWN
-			ptr->pos_y -= velocidade;
-		}
-		if (valL != 67 && direcao == LEFT) {
-			// LEFT
-			ptr->pos_x += velocidade;
-		}
-		if (valR != 67 && direcao == RIGHT) {
-			// RIGHT
-			ptr->pos_x -= velocidade;
+		// ------ MAPA  2 ------
+		if (ptr->escolhaMapa == 2) {
+			// Parede direita
+			ptr->pos_x = min(512, ptr->pos_x);
+			// Parede direita corredor
+			if (ptr->pos_y >= 358) {
+				ptr->pos_x = max(448, ptr->pos_x);
+			}
+			// Parede esquerda
+			if (ptr->pos_y <= 280 && ptr->pos_x <= 256) {
+				ptr->pos_x = max(96, min(192, ptr->pos_x));
+			}
+			//if (ptr->pos_y <= 280 && ptr->pos_x < 416) {
+				//ptr->pos_x = max(256, min(352, ptr->pos_x));
+				//ptr->pos_x = max(416, ptr->pos_x);
+			//}
+			// Parede superior
+			ptr->pos_y = max(96, ptr->pos_y);
+			if (ptr->pos_x != 96 && ptr->pos_y >= 288 && ptr->pos_y <= 288) {
+				ptr->pos_y = max(32 * 9, ptr->pos_y);
+			}
+			if (ptr->pos_x < 448) {
+				ptr->pos_y = min(352, ptr->pos_y);
+			}
 		}
 
 		// Troca de mapas
@@ -232,13 +240,4 @@ int main(void)
 	al_destroy_display(display);
 
 	return 0;
-}
-
-bool colisao(int x, int y, int paredeX, int paredeY, int colisaoX, int colisaoY) {
-	if (x + colisaoX < paredeX || x > colisaoX + paredeX || y + colisaoY < paredeY || y > colisaoY + paredeY) {
-		return false;
-	}
-	else { // UP, DOWN, LEFT, RIGHT
-		return true;
-	}
 }

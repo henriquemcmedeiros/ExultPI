@@ -53,10 +53,6 @@ void trocarMapas(mapa* ptr) {
         ptr->pos_x = 16;
         ptr->pos_y = 368;
     }
-
-    if (ptr->escolhaMapa == 4 && ptr->pos_y == 336 && ptr->pos_x == 240) {
-        ptr->done = true;
-    }
 }
 
 void loadMap() {
@@ -122,7 +118,6 @@ int** geraMapas(int mapa) {
     return mapas;
 }
 
-
 void limparMapas(int** mapa) {
       // ------ Limpando Memória ------
       // Limpando memória do mapa
@@ -131,3 +126,43 @@ void limparMapas(int** mapa) {
       }
       free(mapa);
 }
+
+/*bool colisao(mapa* ptr) {
+    int aux = (ptr->pos_x / 32);
+    int auy = (ptr->pos_y / 32);
+
+    int valU = 67;
+    int valD = 67;
+    int valL = 67;
+    int valR = 67;
+
+    if (ptr->pos_y > 32 && ptr->pos_y < height - 32 && auy < 14 && aux < 19) {
+        valU = ptr->map[auy][aux];
+        valD = ptr->map[auy + 1][aux];
+    }
+    if (ptr->pos_x > 32 && ptr->pos_x < width - 32 && auy < 15 && aux < 20) {
+        valL = ptr->map[auy][aux];
+        valR = ptr->map[auy][aux + 1];
+    }
+
+    if (valU != 67 && direcao == UP) {
+        // UP
+        ptr->pos_y += velocidade;
+    }
+    if (valD != 67 && direcao == DOWN) {
+        // DOWN
+        ptr->pos_y -= velocidade;
+    }
+    if (valL != 67 && direcao == LEFT) {
+        // LEFT
+        ptr->pos_x += velocidade;
+    }
+    if (valR != 67 && direcao == RIGHT) {
+        // RIGHT
+        ptr->pos_x -= velocidade;
+    }
+
+    if (ptr->escolhaMapa == 4 && ptr->pos_y == 320 && ptr->pos_x == 224) {
+        ptr->done = true;
+    }
+}*/
