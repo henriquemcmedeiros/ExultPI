@@ -1,12 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
-#include <allegro5/allegro.h>				//incluindo bibliotecas
-#include <allegro5/allegro_ttf.h>
-#include <allegro5/allegro_font.h> 
-#include <allegro5/allegro_primitives.h>
-#include <allegro5/allegro_audio.h>
-#include <allegro5/allegro_acodec.h>
+#include <../../../../../header.h>
 #include <../../../../../mapas.h>
 
 // ------ Variaveis globais ------
@@ -15,21 +7,34 @@ ALLEGRO_SAMPLE_INSTANCE* inst_trilha_sonora = NULL;  //instanciar evita conflito
 
 enum KEYS {UP, DOWN, LEFT, RIGHT};
 
+bool colisao(int x, int y, int paredeX, int paredeY, int colisaoX, int colisaoY);
+
 int main(void)
 {
+	mapa *ptr = (mapa*)malloc(sizeof(mapa));
+
 	// Declarando variáveis
 	// Altura e largura da tela
 	int width = 640;
 	int height = 480;
 	
-	bool done = false;	
-	int pos_x = width / 2;
-	int pos_y = height / 2;
+	ptr->done = false;
+	ptr->pos_x = 288;
+	ptr->pos_y = 224;
 
 	// Mapa
 	int mapColumns = 20;
 	int tileSize = 32;
-	int escolhaMapa = 1;
+	ptr->escolhaMapa = 1;
+	
+	// Bordas do display
+	int XMAX = 656;
+	int XMIN = -16;
+	int YMAX = 496;
+	int YMIN = -16;
+
+	int direcao;
+	int velocidade = 4;
 
 	bool keys[4] = {false, false, false, false};
 
@@ -58,7 +63,6 @@ int main(void)
 	al_install_keyboard();
 	al_reserve_samples(15);									//"quantos audios vai ter no jogo"
 
-
 	// ------ Configuração do nome do display ------
 	al_set_window_title(display, "Exult");
 
@@ -83,9 +87,10 @@ int main(void)
 	al_register_event_source(event_queue, al_get_keyboard_event_source());
 	al_register_event_source(event_queue, al_get_display_event_source(display));
 
-	int** map = geraMapas(escolhaMapa);
+	// Gera mapa1 como padrão
+	ptr->map = geraMapas(ptr->escolhaMapa);
 	
-	while (!done)			
+	while (!ptr->done)
 	{
 		ALLEGRO_EVENT ev;									//evento das teclas para MOVIMENTAÇÃO
 		al_wait_for_event(event_queue, &ev);
@@ -105,18 +110,22 @@ int main(void)
 			{
 			case ALLEGRO_KEY_UP: case ALLEGRO_KEY_W:
 				keys[UP] = true;
-			break;
+				direcao = UP;
+				break;
 
 			case ALLEGRO_KEY_DOWN: case ALLEGRO_KEY_S:
 				keys[DOWN] = true;
+				direcao = DOWN;
 				break;
 
 			case ALLEGRO_KEY_LEFT: case ALLEGRO_KEY_A:
 				keys[LEFT] = true;
+				direcao = LEFT;
 				break;
 
 			case ALLEGRO_KEY_RIGHT: case ALLEGRO_KEY_D:
 				keys[RIGHT] = true;
+				direcao = RIGHT;
 				break;
 			}
 		}
@@ -142,82 +151,63 @@ int main(void)
 				break;
 
 			case ALLEGRO_KEY_ESCAPE:
-				done = true;
+				ptr->done = true;
 				break;
 
 			}
 		}
 		else if (ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE)  //para fechar o display ao apertar o X
 		{
-			done = true;                            
+			ptr->done = true;
 		}
 
-		pos_y -= keys[UP] * 4;
-		pos_y += keys[DOWN] * 4;
-		pos_x -= keys[LEFT] * 4;
-		pos_x += keys[RIGHT] * 4;
+		// Posição e velocidade do personagem
+		ptr->pos_y -= keys[UP] * velocidade;
+		ptr->pos_y += keys[DOWN] * velocidade;
+		ptr->pos_x -= keys[LEFT] * velocidade;
+		ptr->pos_x += keys[RIGHT] * velocidade;
 
-		int XMAX = 656;
-		int XMIN = -16;
-		int YMAX = 496;
-		int YMIN = -16;
+		int aux = (ptr->pos_x / 32);
+		int auy = (ptr->pos_y / 32);
 
-		if (escolhaMapa == 1 && pos_x >= XMAX) {
-			escolhaMapa = 2;
-			map = geraMapas(escolhaMapa);
-			pos_x = 16;
-			pos_y = 336;
+		int valU = 67;
+		int valD = 67;
+		int valL = 67;
+		int valR = 67;
+
+		if (ptr->pos_y > 32 && ptr->pos_y < height - 32 && auy < 15 && aux < 20) {
+			valU = ptr->map[auy][aux];
+			valD = ptr->map[auy + 1][aux];
 		}
-		if (escolhaMapa == 2 && pos_x <= XMIN) {
-			escolhaMapa = 1;
-			map = geraMapas(escolhaMapa);
-			pos_x = 624;
-			pos_y = 336;
-		}
-		else if (escolhaMapa == 2 && pos_y >= YMAX) {
-			escolhaMapa = 3;
-			map = geraMapas(escolhaMapa);
-			pos_x = 496;
-			pos_y = 16;
-		}
-		if (escolhaMapa == 3 && pos_y <= YMIN) {
-			escolhaMapa = 2;
-			map = geraMapas(escolhaMapa);
-			pos_x = 496;
-			pos_y = 464;
-		}
-		else if (escolhaMapa == 3 && pos_x <= XMIN) {
-			escolhaMapa = 4;
-			map = geraMapas(escolhaMapa);
-			pos_x = 624;
-			pos_y = 368;
-		}
-		if (escolhaMapa == 4 && pos_x >= XMAX) {
-			escolhaMapa = 3;
-			map = geraMapas(escolhaMapa);
-			pos_x = 16;
-			pos_y = 368;
+		if (ptr->pos_x > 32 && ptr->pos_x < width - 32 && auy < 15 && aux < 20) {
+			valL = ptr->map[auy][aux];
+			valR = ptr->map[auy][aux + 1];
 		}
 
-		if (escolhaMapa == 4 && pos_y == 336 && pos_x == 240) {
-			done = true;
+		if (valU != 67 && direcao == UP) {
+			// UP
+			ptr->pos_y += velocidade;
+		}
+		if (valD != 67 && direcao == DOWN) {
+			// DOWN
+			ptr->pos_y -= velocidade;
+		}
+		if (valL != 67 && direcao == LEFT) {
+			// LEFT
+			ptr->pos_x += velocidade;
+		}
+		if (valR != 67 && direcao == RIGHT) {
+			// RIGHT
+			ptr->pos_x -= velocidade;
 		}
 
-		// Gera mapa1 como padrão
-		
-
-		/*for (int i = 0; i < 15; i++) {
-			for (int j = 0; j < 20; j++) {
-				printf("%d", map[i][j]);
-			}
-			printf("\n");
-		}*/
-
+		// Troca de mapas
+		trocarMapas(ptr);
 
 		// Desenha os mapas na tela
 		for (int i = 0; i < 15; i++) {
 			for (int j = 0; j < 20; j++) {
-				int val = map[i][j];
+				int val = ptr->map[i][j];
 				sourceX = val / 10;
 				sourceY = val % 10;
 				al_draw_bitmap_region(bgSheet, tileSize * sourceX, tileSize * sourceY, tileSize, tileSize, coluna, linha, 0);
@@ -227,18 +217,28 @@ int main(void)
 			coluna = 0;
 		}
 
-		al_draw_filled_rectangle(pos_x - 16, pos_y - 16, pos_x + 16, pos_y + 16, al_map_rgb(200, 0, 055));  //desenho do SQUARE, posição e cor
+		al_draw_filled_rectangle(ptr->pos_x, ptr->pos_y, ptr->pos_x + 32, ptr->pos_y + 32, al_map_rgb(200, 0, 055));  //desenho do SQUARE, posição e cor
 
 		al_flip_display();
 		al_clear_to_color(al_map_rgb(0, 0, 0));
 	}
-	limparMapas(map);
 
 	// ------ FINALIZACOES e DESTROYS ------
+	limparMapas(ptr->map);
+	free(ptr);
 	al_destroy_bitmap(bgSheet);
 	al_destroy_sample(trilha_sonora);
 	al_destroy_sample_instance(inst_trilha_sonora);
 	al_destroy_display(display);
 
 	return 0;
+}
+
+bool colisao(int x, int y, int paredeX, int paredeY, int colisaoX, int colisaoY) {
+	if (x + colisaoX < paredeX || x > colisaoX + paredeX || y + colisaoY < paredeY || y > colisaoY + paredeY) {
+		return false;
+	}
+	else { // UP, DOWN, LEFT, RIGHT
+		return true;
+	}
 }

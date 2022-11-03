@@ -1,15 +1,63 @@
-#include <stdio.h>
-#include <stdlib.h>
+#include <../../../../../header.h>
 
 int** geraMapas(int mapa);
 void loadMap();
 void limparMapas(int** mapa);
+void trocarMapas(mapa* ptr);
 
 // Declaração da altura e largura fixas com o padrão 32bits
 const int altura = 15;
 const int largura = 20;
 
 FILE* mapa1, *mapa2, *mapa3, *mapa4;
+
+void trocarMapas(mapa* ptr) {
+    int XMAX = 656;
+    int XMIN = -16;
+    int YMAX = 496;
+    int YMIN = -16;
+
+    if (ptr->escolhaMapa == 1 && ptr->pos_x >= XMAX) {
+        ptr->escolhaMapa = 2;
+        ptr->map = geraMapas(ptr->escolhaMapa);
+        ptr->pos_x = 16;
+        ptr->pos_y = 336;
+    }
+    if (ptr->escolhaMapa == 2 && ptr->pos_x <= XMIN) {
+        ptr->escolhaMapa = 1;
+        ptr->map = geraMapas(ptr->escolhaMapa);
+        ptr->pos_x = 624;
+        ptr->pos_y = 336;
+    }
+    else if (ptr->escolhaMapa == 2 && ptr->pos_y >= YMAX) {
+        ptr->escolhaMapa = 3;
+        ptr->map = geraMapas(ptr->escolhaMapa);
+        ptr->pos_x = 496;
+        ptr->pos_y = 16;
+    }
+    if (ptr->escolhaMapa == 3 && ptr->pos_y <= YMIN) {
+        ptr->escolhaMapa = 2;
+        ptr->map = geraMapas(ptr->escolhaMapa);
+        ptr->pos_x = 496;
+        ptr->pos_y = 464;
+    }
+    else if (ptr->escolhaMapa == 3 && ptr->pos_x <= XMIN) {
+        ptr->escolhaMapa = 4;
+        ptr->map = geraMapas(ptr->escolhaMapa);
+        ptr->pos_x = 624;
+        ptr->pos_y = 368;
+    }
+    if (ptr->escolhaMapa == 4 && ptr->pos_x >= XMAX) {
+        ptr->escolhaMapa = 3;
+        ptr->map = geraMapas(ptr->escolhaMapa);
+        ptr->pos_x = 16;
+        ptr->pos_y = 368;
+    }
+
+    if (ptr->escolhaMapa == 4 && ptr->pos_y == 336 && ptr->pos_x == 240) {
+        ptr->done = true;
+    }
+}
 
 void loadMap() {
     errno_t err1 = fopen_s(&mapa1, "mapas/mapa1.txt", "r");
