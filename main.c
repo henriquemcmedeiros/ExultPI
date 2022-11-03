@@ -7,6 +7,8 @@
 #include <allegro5/allegro_primitives.h>
 #include <allegro5/allegro_audio.h>
 #include <allegro5/allegro_acodec.h>
+#include <allegro5\allegro_image.h>
+#include <../../../../../Minigames.h>
 
 //__________________________________________
 //Variaveis globais
@@ -19,9 +21,7 @@ ALLEGRO_SAMPLE_INSTANCE* inst_passos = NULL;
 
 enum KEYS { UP, DOWN, LEFT, RIGHT };
 
-int main(void)
-{
-
+int main(void) {
 	int width = 640;
 	int height = 480;
 
@@ -136,7 +136,6 @@ int main(void)
 
 				}
 			}
-
 				else if (ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE)  //para fechar o display ao apertar o X
 			{
 				done = true;                            
@@ -151,9 +150,6 @@ int main(void)
 			al_draw_filled_rectangle(pos_x, pos_y, pos_x + 30, pos_y + 30, al_map_rgb(200, 0, 055));  //desenho do SQUARE, posição e cor
 			al_flip_display();
 			al_clear_to_color(al_map_rgb(192, 192, 192));
-
-			
-
 		}
 
 //----------------------------------------
