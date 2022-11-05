@@ -3,7 +3,10 @@
 
 // ------ Variaveis globais ------
 ALLEGRO_SAMPLE* trilha_sonora = NULL;
+ALLEGRO_SAMPLE* passos = NULL;
+
 ALLEGRO_SAMPLE_INSTANCE* inst_trilha_sonora = NULL;  //instanciar evita conflitos e permite functions a mais
+ALLEGRO_SAMPLE_INSTANCE* inst_passos = NULL;
 
 enum KEYS {UP, DOWN, LEFT, RIGHT};
 
@@ -11,7 +14,7 @@ int main(void)
 {
 	mapa *ptr = (mapa*)malloc(sizeof(mapa));
 
-	// Declarando vari·veis
+	// Declarando vari√°veis
 	// Altura e largura da tela
 	int width = 640;
 	int height = 480;
@@ -39,12 +42,12 @@ int main(void)
 
 	bool keys[4] = {false, false, false, false};
 
-	// V·ri·veis do allegro
+	// V√°ri√°veis do allegro
 	ALLEGRO_DISPLAY* display = NULL;
 	ALLEGRO_EVENT_QUEUE* event_queue = NULL;
 	ALLEGRO_BITMAP* bgSheet = NULL;
 
-	if (!al_init()) {                                        //Teste iniciaÁ„o allegro
+	if (!al_init()) {                                        //Teste inicia√ß√£o allegro
 		fprintf(stderr, "Falha ao iniciar o Allegro\n");
 		return -1;
 	}
@@ -64,12 +67,12 @@ int main(void)
 	al_install_keyboard();
 	al_reserve_samples(15);									//"quantos audios vai ter no jogo"
 
-	// ------ ConfiguraÁ„o do nome do display ------
+	// ------ Configura√ß√£o do nome do display ------
 	al_set_window_title(display, "Exult");
 
 	bgSheet = al_load_bitmap("assets/Full.png");			// Puxando os tiles
 
-	// ------ CriaÁ„o de filas ------
+	// ------ Cria√ß√£o de filas ------
 	event_queue = al_create_event_queue();
 	if (!event_queue) {
 		fprintf(stderr, "Falha ao criar fila de evento\n");	// Teste fila de eventos
@@ -88,46 +91,45 @@ int main(void)
 	al_register_event_source(event_queue, al_get_keyboard_event_source());
 	al_register_event_source(event_queue, al_get_display_event_source(display));
 
-	// Gera mapa1 como padr„o
+	// Gera mapa1 como padr√£o
 	ptr->map = geraMapas(ptr->escolhaMapa);
 	
 	while (!ptr->done)
 	{
-		ALLEGRO_EVENT ev;									//evento das teclas para MOVIMENTA«√O
+		ALLEGRO_EVENT ev;									//evento das teclas para MOVIMENTA√á√ÉO
 		al_wait_for_event(event_queue, &ev);
 		al_play_sample_instance(inst_trilha_sonora);
 
-		// EndereÁo dos tiles no display
+		// Endere√ßo dos tiles no display
 		int linha = 0;
 		int coluna = 0;
 
-		// EndereÁo do tileset
+		// Endere√ßo do tileset
 		int sourceY = 0;
 		int sourceX = 0;
+ 
+		if (ev.type == ALLEGRO_EVENT_KEY_DOWN) {
+				switch (ev.keyboard.keycode) {
+				case ALLEGRO_KEY_UP: case ALLEGRO_KEY_W:
+					keys[UP] = true;
+					direcao = UP;
+					break;
 
-		if (ev.type == ALLEGRO_EVENT_KEY_DOWN)
-		{
-			switch (ev.keyboard.keycode)
-			{
-			case ALLEGRO_KEY_UP: case ALLEGRO_KEY_W:
-				keys[UP] = true;
-				direcao = UP;
-				break;
+				case ALLEGRO_KEY_DOWN: case ALLEGRO_KEY_S:
+					keys[DOWN] = true;
+					direcao = DOWN;
+					break;
 
-			case ALLEGRO_KEY_DOWN: case ALLEGRO_KEY_S:
-				keys[DOWN] = true;
-				direcao = DOWN;
-				break;
+				case ALLEGRO_KEY_LEFT: case ALLEGRO_KEY_A:
+					keys[LEFT] = true;
+					direcao = LEFT;
+					break;
 
-			case ALLEGRO_KEY_LEFT: case ALLEGRO_KEY_A:
-				keys[LEFT] = true;
-				direcao = LEFT;
-				break;
-
-			case ALLEGRO_KEY_RIGHT: case ALLEGRO_KEY_D:
-				keys[RIGHT] = true;
-				direcao = RIGHT;
-				break;
+				case ALLEGRO_KEY_RIGHT: case ALLEGRO_KEY_D:
+					keys[RIGHT] = true;
+					direcao = RIGHT;
+					break;
+				}
 			}
 		}
 
@@ -162,13 +164,13 @@ int main(void)
 			ptr->done = true;
 		}
 
-		// PosiÁ„o e velocidade do personagem
+		// Posi√ß√£o e velocidade do personagem
 		ptr->pos_y -= keys[UP] * velocidade;
 		ptr->pos_y += keys[DOWN] * velocidade;
 		ptr->pos_x -= keys[LEFT] * velocidade;
 		ptr->pos_x += keys[RIGHT] * velocidade;	
 
-		// Colisıes
+		// Colis√µes
 		colisao(ptr, ptr->escolhaMapa, minigameAtual);
 
 		// Troca de mapas
@@ -187,7 +189,7 @@ int main(void)
 			coluna = 0;
 		}
 
-		al_draw_filled_rectangle(ptr->pos_x, ptr->pos_y, ptr->pos_x + 32, ptr->pos_y + 32, al_map_rgb(200, 0, 055));  //desenho do SQUARE, posiÁ„o e cor
+		al_draw_filled_rectangle(ptr->pos_x, ptr->pos_y, ptr->pos_x + 32, ptr->pos_y + 32, al_map_rgb(200, 0, 055));  //desenho do SQUARE, posi√ß√£o e cor
 
 		al_flip_display();
 		al_clear_to_color(al_map_rgb(0, 0, 0));
