@@ -170,26 +170,17 @@ void colisao(mapa* ptr, int mapa, int minigameAtual) {
 			if (ptr->pos_x != 96) {
 				ptr->pos_y = max(288, ptr->pos_y);
 			}
-			else {
-				// DIALOGO PORTA FECHADA
-			}
 			break;
 		case 1:
 			ptr->map[8][8] = 64;
 			if (ptr->pos_x != 256) {
 				ptr->pos_y = max(288, ptr->pos_y);
 			}
-			else {
-				// DIALOGO PORTA FECHADA
-			}
 			break;
 		case 2:
 			ptr->map[8][13] = 64;
 			if (ptr->pos_x != 416) {
 				ptr->pos_y = max(288, ptr->pos_y);
-			}
-			else {
-				// DIALOGO PORTA FECHADA
 			}
 			break;
 		default:
