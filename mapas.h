@@ -4,6 +4,7 @@ int** geraMapas(int mapa);
 void loadMap();
 void limparMapas(int** mapa);
 void trocarMapas(mapa* ptr);
+void colisao(mapa* ptr, int mapa, int minigameAtual);
 
 // Declaração da altura e largura fixas com o padrão 32bits
 const int altura = 15;
@@ -127,42 +128,119 @@ void limparMapas(int** mapa) {
       free(mapa);
 }
 
-/*bool colisao(mapa* ptr) {
-    int aux = (ptr->pos_x / 32);
-    int auy = (ptr->pos_y / 32);
-
-    int valU = 67;
-    int valD = 67;
-    int valL = 67;
-    int valR = 67;
-
-    if (ptr->pos_y > 32 && ptr->pos_y < height - 32 && auy < 14 && aux < 19) {
-        valU = ptr->map[auy][aux];
-        valD = ptr->map[auy + 1][aux];
-    }
-    if (ptr->pos_x > 32 && ptr->pos_x < width - 32 && auy < 15 && aux < 20) {
-        valL = ptr->map[auy][aux];
-        valR = ptr->map[auy][aux + 1];
-    }
-
-    if (valU != 67 && direcao == UP) {
-        // UP
-        ptr->pos_y += velocidade;
-    }
-    if (valD != 67 && direcao == DOWN) {
-        // DOWN
-        ptr->pos_y -= velocidade;
-    }
-    if (valL != 67 && direcao == LEFT) {
-        // LEFT
-        ptr->pos_x += velocidade;
-    }
-    if (valR != 67 && direcao == RIGHT) {
-        // RIGHT
-        ptr->pos_x -= velocidade;
-    }
-
-    if (ptr->escolhaMapa == 4 && ptr->pos_y == 320 && ptr->pos_x == 224) {
-        ptr->done = true;
-    }
-}*/
+void colisao(mapa* ptr, int mapa, int minigameAtual) {
+	// ------ Colisão ------
+	// ------ MAPA  1 ------
+	if (ptr->escolhaMapa == 1) {
+		// Parede direita
+		if (ptr->pos_y <= 280) {
+			ptr->pos_x = min(480, ptr->pos_x);
+		}
+		// Parede esquerda
+		ptr->pos_x = max(96, ptr->pos_x);
+		// Parede superior e inferior
+		ptr->pos_y = max(96, min(352, ptr->pos_y));
+		// Parede superior corredor
+		if (ptr->pos_x >= 484) {
+			ptr->pos_y = max(288, ptr->pos_y);
+		}
+	}
+	// ------ MAPA  2 ------
+	else if (ptr->escolhaMapa == 2) {
+		// Parede direita
+		ptr->pos_x = min(512, ptr->pos_x);
+		// Parede esquerda corredor
+		if (ptr->pos_y >= 358) {
+			ptr->pos_x = max(448, ptr->pos_x);
+		}
+		// Parede superior
+		ptr->pos_y = max(96, ptr->pos_y);
+		if (ptr->pos_x != 96 && ptr->pos_y >= 288 && ptr->pos_y <= 288) {
+			ptr->pos_y = max(32 * 9, ptr->pos_y);
+		}
+		// Parede inferior
+		if (ptr->pos_x < 448) {
+			ptr->pos_y = min(352, ptr->pos_y);
+		}
+		// Parede superior portas e atualizações
+		switch (minigameAtual)
+		{
+		case 0:
+			ptr->map[8][3] = 64;
+			if (ptr->pos_x != 96) {
+				ptr->pos_y = max(288, ptr->pos_y);
+			}
+			else {
+				// DIALOGO PORTA FECHADA
+			}
+			break;
+		case 1:
+			ptr->map[8][8] = 64;
+			if (ptr->pos_x != 256) {
+				ptr->pos_y = max(288, ptr->pos_y);
+			}
+			else {
+				// DIALOGO PORTA FECHADA
+			}
+			break;
+		case 2:
+			ptr->map[8][13] = 64;
+			if (ptr->pos_x != 416) {
+				ptr->pos_y = max(288, ptr->pos_y);
+			}
+			else {
+				// DIALOGO PORTA FECHADA
+			}
+			break;
+		default:
+			break;
+		}
+	}
+	// ------ MAPA  3 ------
+	else if (ptr->escolhaMapa == 3) {
+		// Parede Esquerda e direita principais
+		if (ptr->pos_y < 10 * 32 - 4) {
+			ptr->pos_x = max(5 * 32, min(16 * 32, ptr->pos_x));
+		}
+		// Parede Superior e inferior principais
+		if (ptr->pos_x < 14 * 32 - 4) {
+			ptr->pos_y = max(4 * 32, min(12 * 32, ptr->pos_y));
+		}
+		// Parede superior corredor esquerda
+		if (ptr->pos_x < 5 * 32) {
+			ptr->pos_y = max(10 * 32, ptr->pos_y);
+		}
+		// Parede esquerda corredor BOSS
+		if (ptr->pos_y < 4 * 32) {
+			ptr->pos_x = max(14 * 32, ptr->pos_x);
+		}
+		// Parede Superior BOSS
+		if (ptr->pos_x > 9 * 32 + 4) {
+			ptr->pos_y = min(7 * 32, ptr->pos_y);
+		}
+		// Parede Direita BOSS
+		if (ptr->pos_y > 7 * 32) {
+			ptr->pos_x = min(9 * 32, ptr->pos_x);
+		}
+	}
+	// ------ MAPA  4 ------
+	else if (ptr->escolhaMapa == 4) {
+		// Parede direita
+		if (ptr->pos_y <= 32 * 10 - 6) {
+			ptr->pos_x = min(17 * 32, ptr->pos_x);
+		}
+		// Parede esquerda
+		if (ptr->pos_y != 160) {
+			ptr->pos_x = max(32 * 8, ptr->pos_x);
+		}
+		// Parede superior e inferior
+		ptr->pos_y = max(96, min(12 * 32, ptr->pos_y));
+		// Parede superior corredor
+		if (ptr->pos_x >= 18 * 32 - 24) {
+			ptr->pos_y = max(320, ptr->pos_y);
+		}
+		if (ptr->pos_x == 32 * 7 && ptr->pos_y == 32 * 5) {
+			ptr->done = true;
+		}
+	}
+}

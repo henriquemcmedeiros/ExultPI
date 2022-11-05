@@ -7,8 +7,6 @@ ALLEGRO_SAMPLE_INSTANCE* inst_trilha_sonora = NULL;  //instanciar evita conflito
 
 enum KEYS {UP, DOWN, LEFT, RIGHT};
 
-bool colisao(int x, int y, int paredeX, int paredeY, int colisaoX, int colisaoY);
-
 int main(void)
 {
 	mapa *ptr = (mapa*)malloc(sizeof(mapa));
@@ -24,8 +22,11 @@ int main(void)
 
 	// Mapa
 	int mapColumns = 20;
+	int mapRows = 15;
 	int tileSize = 32;
 	ptr->escolhaMapa = 1;
+
+	int minigameAtual = 0;
 	
 	// Bordas do display
 	int XMAX = 656;
@@ -167,54 +168,15 @@ int main(void)
 		ptr->pos_x -= keys[LEFT] * velocidade;
 		ptr->pos_x += keys[RIGHT] * velocidade;	
 
-		// ------ Colisão ------
-		// ------ MAPA  1 ------
-		if (ptr->escolhaMapa == 1) {
-			// Parede direita
-			if (ptr->pos_y <= 280) {
-				ptr->pos_x = min(480, ptr->pos_x);
-			}
-			// Parede esquerda
-			ptr->pos_x = max(96, ptr->pos_x);
-			// Parede superior e inferior
-			ptr->pos_y = max(96, min(352, ptr->pos_y));
-			if (ptr->pos_x >= 484) {
-				// Parede superior corredor
-				ptr->pos_y = max(288, ptr->pos_y);
-			}
-		}
-		// ------ MAPA  2 ------
-		if (ptr->escolhaMapa == 2) {
-			// Parede direita
-			ptr->pos_x = min(512, ptr->pos_x);
-			// Parede direita corredor
-			if (ptr->pos_y >= 358) {
-				ptr->pos_x = max(448, ptr->pos_x);
-			}
-			// Parede esquerda
-			if (ptr->pos_y <= 280 && ptr->pos_x <= 256) {
-				ptr->pos_x = max(96, min(192, ptr->pos_x));
-			}
-			//if (ptr->pos_y <= 280 && ptr->pos_x < 416) {
-				//ptr->pos_x = max(256, min(352, ptr->pos_x));
-				//ptr->pos_x = max(416, ptr->pos_x);
-			//}
-			// Parede superior
-			ptr->pos_y = max(96, ptr->pos_y);
-			if (ptr->pos_x != 96 && ptr->pos_y >= 288 && ptr->pos_y <= 288) {
-				ptr->pos_y = max(32 * 9, ptr->pos_y);
-			}
-			if (ptr->pos_x < 448) {
-				ptr->pos_y = min(352, ptr->pos_y);
-			}
-		}
+		// Colisões
+		colisao(ptr, ptr->escolhaMapa, minigameAtual);
 
 		// Troca de mapas
 		trocarMapas(ptr);
 
 		// Desenha os mapas na tela
-		for (int i = 0; i < 15; i++) {
-			for (int j = 0; j < 20; j++) {
+		for (int i = 0; i < mapRows; i++) {
+			for (int j = 0; j < mapColumns; j++) {
 				int val = ptr->map[i][j];
 				sourceX = val / 10;
 				sourceY = val % 10;
