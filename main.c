@@ -1,169 +1,213 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
-#include <allegro5/allegro.h>				//incluindo bibliotecas
-#include <allegro5/allegro_ttf.h>
-#include <allegro5/allegro_font.h> 
-#include <allegro5/allegro_primitives.h>
-#include <allegro5/allegro_audio.h>
-#include <allegro5/allegro_acodec.h>
+#include <../../../../../header.h>
+#include <../../../../../mapas.h>
 
-//__________________________________________
-//Variaveis globais
-
+// ------ Variaveis globais ------
 ALLEGRO_SAMPLE* trilha_sonora = NULL;
 ALLEGRO_SAMPLE* passos = NULL;
 
 ALLEGRO_SAMPLE_INSTANCE* inst_trilha_sonora = NULL;  //instanciar evita conflitos e permite functions a mais
 ALLEGRO_SAMPLE_INSTANCE* inst_passos = NULL;
 
-enum KEYS { UP, DOWN, LEFT, RIGHT };
+enum KEYS {UP, DOWN, LEFT, RIGHT};
 
 int main(void)
 {
+	mapa *ptr = (mapa*)malloc(sizeof(mapa));
 
+	// Declarando variáveis
+	// Altura e largura da tela
 	int width = 640;
 	int height = 480;
+	
+	ptr->done = false;
+	ptr->pos_x = 288;
+	ptr->pos_y = 224;
 
-	bool done = false;	
-	int  pos_x = width / 2;
-	int pos_y = height / 2;                        //declarando variáveis
+	// Mapa
+	int mapColumns = 20;
+	int mapRows = 15;
+	int tileSize = 32;
+	ptr->escolhaMapa = 1;
 
-	bool keys[4] = { false, false, false, false };
+	int minigameAtual = 0;
+	
+	// Bordas do display
+	int XMAX = 656;
+	int XMIN = -16;
+	int YMAX = 496;
+	int YMIN = -16;
 
-		ALLEGRO_DISPLAY *display = NULL;
-		ALLEGRO_EVENT_QUEUE* event_queue = NULL;
+	int direcao;
+	int velocidade = 4;
 
-		if (!al_init())                                          //iniciando allegro
-			return -1;
+	bool keys[4] = {false, false, false, false};
+
+	// Váriáveis do allegro
+	ALLEGRO_DISPLAY* display = NULL;
+	ALLEGRO_EVENT_QUEUE* event_queue = NULL;
+	ALLEGRO_BITMAP* bgSheet = NULL;
+
+	if (!al_init()) {                                        //Teste iniciação allegro
+		fprintf(stderr, "Falha ao iniciar o Allegro\n");
+		return -1;
+	}
 		  
-		display = al_create_display(width, height);              //criando display
+	display = al_create_display(width, height);              //criando display
 		 
-		if (!display)                                            //teste display
-			return -1;
+	if (!display) {											 //teste display
+		fprintf(stderr, "Falha ao iniciar o display\n");
+		return -1;
+	}
 
-//-------------------------------------
-		//inicializacao de ADDONS e INSTALACOES
+	// ------ Inicializacao de ADDONS e INSTALACOES ------
+	al_install_audio();
+	al_init_acodec_addon();
+	al_init_primitives_addon();
+	al_init_image_addon();
+	al_install_keyboard();
+	al_reserve_samples(15);									//"quantos audios vai ter no jogo"
 
-		al_install_audio();
-		al_init_acodec_addon();
-		al_init_primitives_addon();
-		al_install_keyboard();
+	// ------ Configuração do nome do display ------
+	al_set_window_title(display, "Exult");
 
-		al_reserve_samples(15);  //"quantos audios vai ter no jogo"
+	bgSheet = al_load_bitmap("assets/Full.png");			// Puxando os tiles
 
-//-------------------------------------
-		//criacao de filas
+	// ------ Criação de filas ------
+	event_queue = al_create_event_queue();
+	if (!event_queue) {
+		fprintf(stderr, "Falha ao criar fila de evento\n");	// Teste fila de eventos
+		al_destroy_display(display);
 
-		event_queue = al_create_event_queue();
+		return -1;
+	}
 
-		trilha_sonora = al_load_sample("trilha-sonora.wav"); //carrega qual arquivo vai tocar
-		inst_trilha_sonora = al_create_sample_instance(trilha_sonora); //instancia ela
-		al_attach_sample_instance_to_mixer(inst_trilha_sonora, al_get_default_mixer()); //faz com que ela fique num padrao ja definido poupando trabalho
-		al_set_sample_instance_playmode(inst_trilha_sonora, ALLEGRO_PLAYMODE_LOOP); //coloca a soundtrack em loop
-		al_set_sample_instance_gain(inst_trilha_sonora, 0.4); // VOLUME
+	// ------ Trilha sonora ------
+	trilha_sonora = al_load_sample("Audios/Trilha sonora/trilha-sonora.wav"); //carrega qual arquivo vai tocar
+	inst_trilha_sonora = al_create_sample_instance(trilha_sonora); //instancia ela
+	al_attach_sample_instance_to_mixer(inst_trilha_sonora, al_get_default_mixer()); //faz com que ela fique num padrao ja definido poupando trabalho
+	al_set_sample_instance_playmode(inst_trilha_sonora, ALLEGRO_PLAYMODE_LOOP); //coloca a soundtrack em loop
+	al_set_sample_instance_gain(inst_trilha_sonora, 0.25); // VOLUME trilha sonora
 
-		passos = al_load_sample("passos.wav");
-		inst_passos = al_create_sample_instance(passos);
-		al_attach_sample_instance_to_mixer(inst_passos, al_get_default_mixer());
+	al_register_event_source(event_queue, al_get_keyboard_event_source());
+	al_register_event_source(event_queue, al_get_display_event_source(display));
 
-		al_register_event_source(event_queue, al_get_keyboard_event_source());
-		al_register_event_source(event_queue, al_get_display_event_source(display));
-		al_set_sample_instance_gain(inst_passos, 0.8);
+	// Gera mapa1 como padrão
+	ptr->map = geraMapas(ptr->escolhaMapa);
+	
+	while (!ptr->done)
+	{
+		ALLEGRO_EVENT ev;									//evento das teclas para MOVIMENTAÇÃO
+		al_wait_for_event(event_queue, &ev);
+		al_play_sample_instance(inst_trilha_sonora);
 
-		al_play_sample_instance(inst_trilha_sonora); //starta a musica
-		
+		// Endereço dos tiles no display
+		int linha = 0;
+		int coluna = 0;
 
-		while (!done)			
+		// Endereço do tileset
+		int sourceY = 0;
+		int sourceX = 0;
+
+		if (ev.type == ALLEGRO_EVENT_KEY_DOWN)
 		{
 			ALLEGRO_EVENT ev;									//evento das teclas para MOVIMENTAÇÃO
 			al_wait_for_event(event_queue, &ev);
 			
 			if (ev.type == ALLEGRO_EVENT_KEY_DOWN)
 			{
-				switch (ev.keyboard.keycode)
-				{
-				case ALLEGRO_KEY_W:
+				switch (ev.keyboard.keycode) {
+				case ALLEGRO_KEY_UP: case ALLEGRO_KEY_W:
 					keys[UP] = true;
-					al_stop_sample_instance(inst_passos);
-					al_play_sample_instance(inst_passos);
-				break;
+					direcao = UP;
+					break;
 
-				case ALLEGRO_KEY_S:
+				case ALLEGRO_KEY_DOWN: case ALLEGRO_KEY_S:
 					keys[DOWN] = true;
-					al_stop_sample_instance(inst_passos);
-					al_play_sample_instance(inst_passos);
+					direcao = DOWN;
 					break;
 
-				case ALLEGRO_KEY_A:
+				case ALLEGRO_KEY_LEFT: case ALLEGRO_KEY_A:
 					keys[LEFT] = true;
-					al_stop_sample_instance(inst_passos);
-					al_play_sample_instance(inst_passos);
+					direcao = LEFT;
 					break;
 
-				case ALLEGRO_KEY_D:
+				case ALLEGRO_KEY_RIGHT: case ALLEGRO_KEY_D:
 					keys[RIGHT] = true;
-					al_stop_sample_instance(inst_passos);
-					al_play_sample_instance(inst_passos);
+					direcao = RIGHT;
 					break;
-					
 				}
 			}
-
-				else if (ev.type == ALLEGRO_EVENT_KEY_UP)
-			{
-				switch (ev.keyboard.keycode)
-				{
-				case ALLEGRO_KEY_W:
-					keys[UP] = false;
-					break;
-
-				case ALLEGRO_KEY_S:
-					keys[DOWN] = false;
-					break;
-
-				case ALLEGRO_KEY_A:
-					keys[LEFT] = false;
-					break;
-
-				case ALLEGRO_KEY_D:
-					keys[RIGHT] = false;
-					break;
-
-				case ALLEGRO_KEY_ESCAPE:
-					done = true;
-					break;
-
-				}
-			}
-
-				else if (ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE)  //para fechar o display ao apertar o X
-			{
-				done = true;                            
-			}
-
-			pos_y -= keys[UP] * 10;
-			pos_y += keys[DOWN] * 10;
-			pos_x -= keys[LEFT] * 10;
-			pos_x += keys[RIGHT] * 10;
-
-
-			al_draw_filled_rectangle(pos_x, pos_y, pos_x + 30, pos_y + 30, al_map_rgb(200, 0, 055));  //desenho do SQUARE, posição e cor
-			al_flip_display();
-			al_clear_to_color(al_map_rgb(192, 192, 192));
-
-			
-
 		}
 
-//----------------------------------------
-		//FINALIZACOES e DESTROYS
+		else if (ev.type == ALLEGRO_EVENT_KEY_UP)
+		{
+			switch (ev.keyboard.keycode)
+			{
+			case ALLEGRO_KEY_UP: case ALLEGRO_KEY_W:
+				keys[UP] = false;
+				break;
 
-		al_destroy_sample(trilha_sonora);
-		al_destroy_sample_instance(inst_trilha_sonora);
-		al_destroy_sample(passos);
-		al_destroy_sample_instance(inst_passos);
-		al_destroy_display(display);                            
+			case ALLEGRO_KEY_DOWN: case ALLEGRO_KEY_S:
+				keys[DOWN] = false;
+				break;
 
-		return 0;
+			case ALLEGRO_KEY_LEFT: case ALLEGRO_KEY_A:
+				keys[LEFT] = false;
+				break;
+
+			case ALLEGRO_KEY_RIGHT: case ALLEGRO_KEY_D:
+				keys[RIGHT] = false;
+				break;
+
+			case ALLEGRO_KEY_ESCAPE:
+				ptr->done = true;
+				break;
+
+			}
+		}
+		else if (ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE)  //para fechar o display ao apertar o X
+		{
+			ptr->done = true;
+		}
+
+		// Posição e velocidade do personagem
+		ptr->pos_y -= keys[UP] * velocidade;
+		ptr->pos_y += keys[DOWN] * velocidade;
+		ptr->pos_x -= keys[LEFT] * velocidade;
+		ptr->pos_x += keys[RIGHT] * velocidade;	
+
+		// Colisões
+		colisao(ptr, ptr->escolhaMapa, minigameAtual);
+
+		// Troca de mapas
+		trocarMapas(ptr);
+
+		// Desenha os mapas na tela
+		for (int i = 0; i < mapRows; i++) {
+			for (int j = 0; j < mapColumns; j++) {
+				int val = ptr->map[i][j];
+				sourceX = val / 10;
+				sourceY = val % 10;
+				al_draw_bitmap_region(bgSheet, tileSize * sourceX, tileSize * sourceY, tileSize, tileSize, coluna, linha, 0);
+				coluna += 32;
+			}
+			linha += 32;
+			coluna = 0;
+		}
+
+		al_draw_filled_rectangle(ptr->pos_x, ptr->pos_y, ptr->pos_x + 32, ptr->pos_y + 32, al_map_rgb(200, 0, 055));  //desenho do SQUARE, posição e cor
+
+		al_flip_display();
+		al_clear_to_color(al_map_rgb(0, 0, 0));
+	}
+
+	// ------ FINALIZACOES e DESTROYS ------
+	limparMapas(ptr->map);
+	free(ptr);
+	al_destroy_bitmap(bgSheet);
+	al_destroy_sample(trilha_sonora);
+	al_destroy_sample_instance(inst_trilha_sonora);
+	al_destroy_display(display);
+
+	return 0;
 }
