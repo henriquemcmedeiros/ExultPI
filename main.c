@@ -107,32 +107,27 @@ int main(void)
 		// Endereço do tileset
 		int sourceY = 0;
 		int sourceX = 0;
- 
+
 		if (ev.type == ALLEGRO_EVENT_KEY_DOWN) {
-				switch (ev.keyboard.keycode) {
-				case ALLEGRO_KEY_UP: case ALLEGRO_KEY_W:
-					keys[UP] = true;
-					direcao = UP;
-					break;
-
-				case ALLEGRO_KEY_DOWN: case ALLEGRO_KEY_S:
-					keys[DOWN] = true;
-					direcao = DOWN;
-					break;
-
-				case ALLEGRO_KEY_LEFT: case ALLEGRO_KEY_A:
-					keys[LEFT] = true;
-					direcao = LEFT;
-					break;
-
-				case ALLEGRO_KEY_RIGHT: case ALLEGRO_KEY_D:
-					keys[RIGHT] = true;
-					direcao = RIGHT;
-					break;
-				}
+			switch (ev.keyboard.keycode) {
+			case ALLEGRO_KEY_UP: case ALLEGRO_KEY_W:
+				keys[UP] = true;
+				direcao = UP;
+				break;
+			case ALLEGRO_KEY_DOWN: case ALLEGRO_KEY_S:
+				keys[DOWN] = true;
+				direcao = DOWN;
+				break;
+			case ALLEGRO_KEY_LEFT: case ALLEGRO_KEY_A:
+				keys[LEFT] = true;
+				direcao = LEFT;
+				break;
+			case ALLEGRO_KEY_RIGHT: case ALLEGRO_KEY_D:
+				keys[RIGHT] = true;
+				direcao = RIGHT;
+				break;
 			}
 		}
-
 		else if (ev.type == ALLEGRO_EVENT_KEY_UP)
 		{
 			switch (ev.keyboard.keycode)
@@ -140,23 +135,18 @@ int main(void)
 			case ALLEGRO_KEY_UP: case ALLEGRO_KEY_W:
 				keys[UP] = false;
 				break;
-
 			case ALLEGRO_KEY_DOWN: case ALLEGRO_KEY_S:
 				keys[DOWN] = false;
 				break;
-
 			case ALLEGRO_KEY_LEFT: case ALLEGRO_KEY_A:
 				keys[LEFT] = false;
 				break;
-
 			case ALLEGRO_KEY_RIGHT: case ALLEGRO_KEY_D:
 				keys[RIGHT] = false;
 				break;
-
 			case ALLEGRO_KEY_ESCAPE:
 				ptr->done = true;
 				break;
-
 			}
 		}
 		else if (ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE)  //para fechar o display ao apertar o X
