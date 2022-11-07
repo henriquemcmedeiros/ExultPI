@@ -161,7 +161,7 @@ int main(void)
 		ptr->pos_x += keys[RIGHT] * velocidade;	
 
 		// Colisões
-		colisao(ptr, ptr->escolhaMapa, minigameAtual);
+		minigameAtual = colisao(ptr, ptr->escolhaMapa, minigameAtual);
 
 		// Troca de mapas
 		trocarMapas(ptr);

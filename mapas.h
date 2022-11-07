@@ -4,7 +4,7 @@ int** geraMapas(int mapa);
 void loadMap();
 void limparMapas(int** mapa);
 void trocarMapas(mapa* ptr);
-void colisao(mapa* ptr, int mapa, int minigameAtual);
+int colisao(mapa* ptr, int mapa, int minigameAtual);
 
 // Declaração da altura e largura fixas com o padrão 32bits
 const int altura = 15;
@@ -128,7 +128,7 @@ void limparMapas(int** mapa) {
       free(mapa);
 }
 
-void colisao(mapa* ptr, int mapa, int minigameAtual) {
+int colisao(mapa* ptr, int mapa, int minigameAtual) {
 	// ------ Colisão ------
 	// ------ MAPA  1 ------
 	if (ptr->escolhaMapa == 1) {
@@ -184,7 +184,23 @@ void colisao(mapa* ptr, int mapa, int minigameAtual) {
 			}
 			break;
 		default:
+			ptr->pos_y = max(288, ptr->pos_y);
 			break;
+		}
+		if (ptr->pos_x == 96 && ptr->pos_y == 256) {
+			// MINIGAME 1
+			ptr->map[8][3] = 65;
+			minigameAtual++;
+		}
+		if (ptr->pos_x == 256 && ptr->pos_y == 256) {
+			// MINIGAME 2
+			ptr->map[8][8] = 65;
+			minigameAtual++;
+		}
+		if (ptr->pos_x == 416 && ptr->pos_y == 256) {
+			// MINIGAME 3
+			ptr->map[8][13] = 65;
+			minigameAtual++;
 		}
 	}
 	// ------ MAPA  3 ------
@@ -230,8 +246,10 @@ void colisao(mapa* ptr, int mapa, int minigameAtual) {
 		if (ptr->pos_x >= 18 * 32 - 24) {
 			ptr->pos_y = max(320, ptr->pos_y);
 		}
+		// Fechar mapa
 		if (ptr->pos_x == 32 * 7 && ptr->pos_y == 32 * 5) {
 			ptr->done = true;
 		}
 	}
+	return max(minigameAtual, 0);
 }
