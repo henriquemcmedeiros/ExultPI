@@ -180,7 +180,6 @@ int main(void)
 			linha += 32;
 			coluna = 0;
 		}
-
 		al_draw_filled_rectangle(ptr->pos_x, ptr->pos_y, ptr->pos_x + 32, ptr->pos_y + 32, al_map_rgb(200, 0, 055));  //desenho do SQUARE, posição e cor
 
 		al_flip_display();
