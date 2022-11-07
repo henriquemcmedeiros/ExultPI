@@ -1,5 +1,6 @@
 #include <../../../../../header.h>
 #include <../../../../../mapas.h>
+#include <../../../../../Minigames.h>
 
 // ------ Variaveis globais ------
 ALLEGRO_SAMPLE* trilha_sonora = NULL;
@@ -147,6 +148,7 @@ int main(void)
 			case ALLEGRO_KEY_ESCAPE:
 				ptr->done = true;
 				break;
+
 			}
 		}
 		else if (ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE)  //para fechar o display ao apertar o X
