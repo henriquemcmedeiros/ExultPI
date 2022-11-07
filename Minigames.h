@@ -5,6 +5,7 @@ int vidaCom(ALLEGRO_BITMAP* image2, ALLEGRO_BITMAP* image3, ALLEGRO_BITMAP* imag
 	if (vida == 3) {
 		al_draw_bitmap(image4, 0, 0, 0);
 	}
+
 	if (vida == 2) {
 		al_draw_bitmap(image2, 0, 0, 0);
 	}
