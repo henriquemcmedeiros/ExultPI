@@ -53,7 +53,6 @@ int minigame1() {
 				vida--;
 				break;
 			case ALLEGRO_KEY_V:
-				//espaço para a função que retira a colisão da cela 2
 				done = true;
 				break;
 			case ALLEGRO_KEY_M:
@@ -101,7 +100,6 @@ int minigame2() {
 			switch (ev.keyboard.keycode)
 			{
 			case ALLEGRO_KEY_S:
-				//espaço para a função que retira a colisão da cela 3
 				done = true;
 				break;
 			case ALLEGRO_KEY_V:
@@ -159,7 +157,6 @@ int minigame3() {
 				vida--;
 				break;
 			case ALLEGRO_KEY_M:
-				//espaço para a função que retira a colisão da porta
 				done = true;
 				break;
 			}
