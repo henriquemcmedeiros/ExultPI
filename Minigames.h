@@ -1,47 +1,67 @@
-int vida = 3;
+#include "header.h"
 
-int vidaCom(ALLEGRO_BITMAP* image2, ALLEGRO_BITMAP* image3, ALLEGRO_BITMAP* image4) {
+int vidaAtual(int vida);
+void minigame1(vida* ptrv);
+void minigame2(vida* ptrv);
+void minigame3(vida* ptrv);
+void minigameHub(int minigame, vida* ptrv);
 
-	if (vida == 3) {
+void minigameHub(int minigame, vida* ptrv) {
+	if (minigame == 1) {
+		minigame1(ptrv);
+	}
+	else if (minigame == 2) {
+		minigame2(ptrv);
+	}
+	else if (minigame == 3) {
+		minigame3(ptrv);
+	}
+}
+
+int vidaAtual(int vidas)
+{
+	ALLEGRO_BITMAP* image2 = NULL;
+	ALLEGRO_BITMAP* image3 = NULL;
+	ALLEGRO_BITMAP* image4 = NULL;
+
+	image2 = al_load_bitmap("sangue/sangue2.png");
+	image3 = al_load_bitmap("sangue/sangue3.png");
+	image4 = al_load_bitmap("sangue/sangue1.png");
+
+	if (vidas == 3) {
 		al_draw_bitmap(image4, 0, 0, 0);
 	}
 
-	if (vida == 2) {
+	if (vidas == 2) {
 		al_draw_bitmap(image2, 0, 0, 0);
 	}
 
-	if (vida == 1) {
+	if (vidas == 1) {
 		al_draw_bitmap(image3, 0, 0, 0);
 	}
 
-	if (vida == 0) {
+	al_destroy_bitmap(image2);
+	al_destroy_bitmap(image3);
+	al_destroy_bitmap(image4);
+
+	if (vidas == 0) {
+		// ADICIONAR MENSAGEM DE DERROTA
 		exit(0);
 	}
-
-	return vida;
 }
 
-int minigame1() {
-	bool done = false;
+void minigame1(vida* ptrv) {
+	ptrv->done = false;
 
 	ALLEGRO_EVENT_QUEUE* event_queue = NULL;
 	ALLEGRO_BITMAP* image = NULL;
-	ALLEGRO_BITMAP* image2 = NULL;
-	ALLEGRO_BITMAP* image3 = NULL;
-	ALLEGRO_BITMAP* image4 = NULL;
-
-	al_install_keyboard();
-	al_init_image_addon();
 
 	image = al_load_bitmap("mingame/game1.jpg");
-	image2 = al_load_bitmap("sangue/sangue2.png");
-	image3 = al_load_bitmap("sangue/sangue3.png");
-	image4 = al_load_bitmap("sangue/sangue1.png");
 
 	event_queue = al_create_event_queue();
 	al_register_event_source(event_queue, al_get_keyboard_event_source());
 
-	while (!done)
+	while (!ptrv->done)
 	{
 		ALLEGRO_EVENT ev;
 		al_wait_for_event(event_queue, &ev);
@@ -51,47 +71,41 @@ int minigame1() {
 			switch (ev.keyboard.keycode)
 			{
 			case ALLEGRO_KEY_S:
-				vida--;
+				ptrv->vida--;
 				break;
 			case ALLEGRO_KEY_V:
-				done = true;
+				ptrv->done = true;
 				break;
 			case ALLEGRO_KEY_M:
-				vida--;
+				ptrv->vida--;
+				break;
+			case ALLEGRO_KEY_ESCAPE:
+				ptrv->done = true;
 				break;
 			}
 		}
-		vidaCom(image2, image3, image4);
-		al_draw_bitmap(image, 170, 65, 0);
+		al_clear_to_color(al_map_rgb(80, 58, 101));
+		vidaAtual(ptrv->vida);
+		al_draw_bitmap(image, 100, 40, 0);
 		al_flip_display();
-		al_clear_to_color(al_map_rgb(0, 0, 0));
 	}
 
-	al_destroy_bitmap(image); al_destroy_bitmap(image2); al_destroy_bitmap(image3); al_destroy_bitmap(image4);
+	al_destroy_bitmap(image);
 	al_destroy_event_queue(event_queue);
 }
 
-int minigame2() {
-	bool done = false;
+void minigame2(vida* ptrv) {
+	ptrv->done = false;
 
 	ALLEGRO_EVENT_QUEUE* event_queue = NULL;
 	ALLEGRO_BITMAP* image = NULL;
-	ALLEGRO_BITMAP* image2 = NULL;
-	ALLEGRO_BITMAP* image3 = NULL;
-	ALLEGRO_BITMAP* image4 = NULL;
-
-	al_install_keyboard();
-	al_init_image_addon();
 
 	image = al_load_bitmap("mingame/game1.jpg");
-	image2 = al_load_bitmap("sangue/sangue2.png");
-	image3 = al_load_bitmap("sangue/sangue3.png");
-	image4 = al_load_bitmap("sangue/sangue1.png");
 
 	event_queue = al_create_event_queue();
 	al_register_event_source(event_queue, al_get_keyboard_event_source());
 
-	while (!done)
+	while (!ptrv->done)
 	{
 		ALLEGRO_EVENT ev;
 		al_wait_for_event(event_queue, &ev);
@@ -101,48 +115,41 @@ int minigame2() {
 			switch (ev.keyboard.keycode)
 			{
 			case ALLEGRO_KEY_S:
-				done = true;
+				ptrv->done = true;
 				break;
 			case ALLEGRO_KEY_V:
-				vida--;
+				ptrv->vida--;
 				break;
 			case ALLEGRO_KEY_M:
-				vida--;
+				ptrv->vida--;
+				break;
+			case ALLEGRO_KEY_ESCAPE:
+				ptrv->done = true;
 				break;
 			}
 		}
-		vidaCom(image2, image3, image4);
-		al_draw_bitmap(image, 170, 65, 0);
+		al_clear_to_color(al_map_rgb(80, 58, 101));
+		vidaAtual(ptrv->vida);
+		al_draw_bitmap(image, 100, 40, 0);
 		al_flip_display();
-		al_clear_to_color(al_map_rgb(0, 0, 0));
 	}
 
-	al_destroy_bitmap(image); al_destroy_bitmap(image2); al_destroy_bitmap(image3); al_destroy_bitmap(image4);
+	al_destroy_bitmap(image);
 	al_destroy_event_queue(event_queue);
 }
 
-
-int minigame3() {
-	bool done = false;
+void minigame3(vida* ptrv) {
+	ptrv->done = false;
 
 	ALLEGRO_EVENT_QUEUE* event_queue = NULL;
 	ALLEGRO_BITMAP* image = NULL;
-	ALLEGRO_BITMAP* image2 = NULL;
-	ALLEGRO_BITMAP* image3 = NULL;
-	ALLEGRO_BITMAP* image4 = NULL;
-
-	al_install_keyboard();
-	al_init_image_addon();
 
 	image = al_load_bitmap("mingame/game1.jpg");
-	image2 = al_load_bitmap("sangue/sangue2.png");
-	image3 = al_load_bitmap("sangue/sangue3.png");
-	image4 = al_load_bitmap("sangue/sangue1.png");
 
 	event_queue = al_create_event_queue();
 	al_register_event_source(event_queue, al_get_keyboard_event_source());
 
-	while (!done)
+	while (!ptrv->done)
 	{
 		ALLEGRO_EVENT ev;
 		al_wait_for_event(event_queue, &ev);
@@ -152,24 +159,25 @@ int minigame3() {
 			switch (ev.keyboard.keycode)
 			{
 			case ALLEGRO_KEY_S:
-				vida--;
+				ptrv->vida--;
 				break;
 			case ALLEGRO_KEY_V:
-				vida--;
+				ptrv->vida--;
 				break;
 			case ALLEGRO_KEY_M:
-				done = true;
+				ptrv->done = true;
+				break;
+			case ALLEGRO_KEY_ESCAPE:
+				ptrv->done = true;
 				break;
 			}
 		}
-		vidaCom(image2, image3, image4);
-		al_draw_bitmap(image, 170, 65, 0);
+		al_clear_to_color(al_map_rgb(80, 58, 101));
+		vidaAtual(ptrv->vida);
+		al_draw_bitmap(image, 100, 40, 0);
 		al_flip_display();
-		al_clear_to_color(al_map_rgb(0, 0, 0));
 	}
 
-	al_destroy_bitmap(image); al_destroy_bitmap(image2); al_destroy_bitmap(image3); al_destroy_bitmap(image4);
+	al_destroy_bitmap(image);
 	al_destroy_event_queue(event_queue);
 }
-
-

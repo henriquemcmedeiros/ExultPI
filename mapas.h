@@ -1,10 +1,12 @@
-#include <../../../../../header.h>
+#include "header.h"
+#include "minigames.h"
 
 int** geraMapas(int mapa);
 void loadMap();
 void limparMapas(int** mapa);
 void trocarMapas(mapa* ptr);
 int colisao(mapa* ptr, int mapa, int minigameAtual);
+
 
 // Declaração da altura e largura fixas com o padrão 32bits
 const int altura = 15;
@@ -24,6 +26,7 @@ void trocarMapas(mapa* ptr) {
         ptr->pos_x = 16;
         ptr->pos_y = 336;
     }
+
     if (ptr->escolhaMapa == 2 && ptr->pos_x <= XMIN) {
         ptr->escolhaMapa = 1;
         ptr->map = geraMapas(ptr->escolhaMapa);
@@ -36,6 +39,7 @@ void trocarMapas(mapa* ptr) {
         ptr->pos_x = 496;
         ptr->pos_y = 16;
     }
+
     if (ptr->escolhaMapa == 3 && ptr->pos_y <= YMIN) {
         ptr->escolhaMapa = 2;
         ptr->map = geraMapas(ptr->escolhaMapa);
@@ -48,6 +52,7 @@ void trocarMapas(mapa* ptr) {
         ptr->pos_x = 624;
         ptr->pos_y = 368;
     }
+
     if (ptr->escolhaMapa == 4 && ptr->pos_x >= XMAX) {
         ptr->escolhaMapa = 3;
         ptr->map = geraMapas(ptr->escolhaMapa);
@@ -128,7 +133,7 @@ void limparMapas(int** mapa) {
       free(mapa);
 }
 
-int colisao(mapa* ptr, int mapa, int minigameAtual) {
+int colisao(mapa* ptr, int mapa, int minigameAtual, vida* ptrv) {
 	// ------ Colisão ------
 	// ------ MAPA  1 ------
 	if (ptr->escolhaMapa == 1) {
@@ -184,21 +189,22 @@ int colisao(mapa* ptr, int mapa, int minigameAtual) {
 			}
 			break;
 		default:
+			// Colisão da parede e portas fechadas
 			ptr->pos_y = max(288, ptr->pos_y);
 			break;
 		}
 		if (ptr->pos_x == 96 && ptr->pos_y == 256) {
-			// MINIGAME 1
+			minigameHub(1, ptrv);
 			ptr->map[8][3] = 65;
 			minigameAtual++;
 		}
 		if (ptr->pos_x == 256 && ptr->pos_y == 256) {
-			// MINIGAME 2
+			minigameHub(2, ptrv);
 			ptr->map[8][8] = 65;
 			minigameAtual++;
 		}
 		if (ptr->pos_x == 416 && ptr->pos_y == 256) {
-			// MINIGAME 3
+			minigameHub(3, ptrv);
 			ptr->map[8][13] = 65;
 			minigameAtual++;
 		}

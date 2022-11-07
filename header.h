@@ -9,7 +9,7 @@
 #include <allegro5/allegro_font.h> 
 #include <allegro5/allegro_primitives.h>
 #include <allegro5/allegro_audio.h>
-#include <allegro5\allegro_image.h>
+#include <allegro5/allegro_image.h>
 #include <allegro5/allegro_acodec.h>
 
 typedef struct maps{
@@ -19,5 +19,10 @@ typedef struct maps{
 	int pos_y;
 	bool done;
 } mapa;
+
+typedef struct vidas {
+	int vida;
+	bool done;
+} vida;
 
 #endif

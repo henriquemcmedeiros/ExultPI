@@ -1,12 +1,11 @@
-#include <../../../../../header.h>
-#include <../../../../../mapas.h>
-#include <../../../../../Minigames.h>
+#include "header.h"
+#include "mapas.h"
 
 // ------ Variaveis globais ------
 ALLEGRO_SAMPLE* trilha_sonora = NULL;
 ALLEGRO_SAMPLE* passos = NULL;
 
-ALLEGRO_SAMPLE_INSTANCE* inst_trilha_sonora = NULL;  //instanciar evita conflitos e permite functions a mais
+ALLEGRO_SAMPLE_INSTANCE* inst_trilha_sonora = NULL;				//instanciar evita conflitos e permite functions a mais
 ALLEGRO_SAMPLE_INSTANCE* inst_passos = NULL;
 
 enum KEYS {UP, DOWN, LEFT, RIGHT};
@@ -32,11 +31,9 @@ int main(void)
 
 	int minigameAtual = 0;
 	
-	// Bordas do display
-	int XMAX = 656;
-	int XMIN = -16;
-	int YMAX = 496;
-	int YMIN = -16;
+	vida* ptrv = (vida*)malloc(sizeof(vida));
+
+	ptrv->vida = 3;
 
 	int direcao;
 	int velocidade = 4;
@@ -75,6 +72,7 @@ int main(void)
 
 	// ------ Criação de filas ------
 	event_queue = al_create_event_queue();
+
 	if (!event_queue) {
 		fprintf(stderr, "Falha ao criar fila de evento\n");	// Teste fila de eventos
 		al_destroy_display(display);
@@ -148,7 +146,6 @@ int main(void)
 			case ALLEGRO_KEY_ESCAPE:
 				ptr->done = true;
 				break;
-
 			}
 		}
 		else if (ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE)  //para fechar o display ao apertar o X
@@ -163,7 +160,7 @@ int main(void)
 		ptr->pos_x += keys[RIGHT] * velocidade;	
 
 		// Colisões
-		minigameAtual = colisao(ptr, ptr->escolhaMapa, minigameAtual);
+		minigameAtual = colisao(ptr, ptr->escolhaMapa, minigameAtual, ptrv);
 
 		// Troca de mapas
 		trocarMapas(ptr);
