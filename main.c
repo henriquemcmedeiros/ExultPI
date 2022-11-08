@@ -30,6 +30,8 @@ int main(void)
 	ptr->escolhaMapa = 1;
 
 	int minigameAtual = 0;
+
+	int CountDialogo = 0;
 	
 	vida* ptrv = (vida*)malloc(sizeof(vida));
 
@@ -85,7 +87,7 @@ int main(void)
 	inst_trilha_sonora = al_create_sample_instance(trilha_sonora); //instancia ela
 	al_attach_sample_instance_to_mixer(inst_trilha_sonora, al_get_default_mixer()); //faz com que ela fique num padrao ja definido poupando trabalho
 	al_set_sample_instance_playmode(inst_trilha_sonora, ALLEGRO_PLAYMODE_LOOP); //coloca a soundtrack em loop
-	al_set_sample_instance_gain(inst_trilha_sonora, 0.25); // VOLUME trilha sonora
+	al_set_sample_instance_gain(inst_trilha_sonora, 0); // VOLUME trilha sonora
 
 	al_register_event_source(event_queue, al_get_keyboard_event_source());
 	al_register_event_source(event_queue, al_get_display_event_source(display));
@@ -178,6 +180,36 @@ int main(void)
 			coluna = 0;
 		}
 		al_draw_filled_rectangle(ptr->pos_x, ptr->pos_y, ptr->pos_x + 32, ptr->pos_y + 32, al_map_rgb(200, 0, 055));  //desenho do SQUARE, posição e cor
+
+
+		// ------ DIALOGOS GAMBIARRA ------
+		if (CountDialogo == 0) {
+			dialogo();
+			CountDialogo++;
+		}
+		else if (CountDialogo == 1 && ptr->pos_x == 544) {
+			dialog2();
+			CountDialogo++;
+		}
+		else if (CountDialogo == 2 && ptr->pos_x == 32 && ptr->escolhaMapa == 2) {
+			dialog3();
+			CountDialogo++;
+		}
+		else if (CountDialogo == 3 && ptr->pos_y == 416 && ptr->escolhaMapa == 2) {
+			ptr->pos_y = min(384, ptr->pos_y);
+			dialogCheck();
+		}
+		else if (minigameAtual == 3 && CountDialogo == 3) {
+			CountDialogo++;
+		}
+		else if (CountDialogo == 4 && (ptr->pos_x == 416 || ptr->pos_y == 192) && ptr->escolhaMapa == 3) {
+			dialog6();
+			CountDialogo++;
+		}
+		else if (CountDialogo == 5 && ptr->pos_x == 576 && ptr->escolhaMapa == 4) {
+			dialogFinal();
+			CountDialogo++;
+		}
 
 		al_flip_display();
 		al_clear_to_color(al_map_rgb(0, 0, 0));

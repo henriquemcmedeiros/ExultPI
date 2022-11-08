@@ -25,4 +25,7 @@ typedef struct vidas {
 	bool done;
 } vida;
 
+int Xdialogo = 27;
+int Ydialogo = 300;
+
 #endif
