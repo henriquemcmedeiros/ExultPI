@@ -103,7 +103,7 @@ void minigame2(vida* ptrv) {
 	ALLEGRO_EVENT_QUEUE* event_queue = NULL;
 	ALLEGRO_BITMAP* image = NULL;
 
-	image = al_load_bitmap("mingame/game1.jpg");
+	image = al_load_bitmap("mingame/game2.jpg");
 
 	event_queue = al_create_event_queue();
 	al_register_event_source(event_queue, al_get_keyboard_event_source());
@@ -147,7 +147,7 @@ void minigame3(vida* ptrv) {
 	ALLEGRO_EVENT_QUEUE* event_queue = NULL;
 	ALLEGRO_BITMAP* image = NULL;
 
-	image = al_load_bitmap("mingame/game1.jpg");
+	image = al_load_bitmap("mingame/game3.jpg");
 
 	event_queue = al_create_event_queue();
 	al_register_event_source(event_queue, al_get_keyboard_event_source());
