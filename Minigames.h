@@ -48,7 +48,7 @@ int vidaAtual(int vidas)
 	al_destroy_bitmap(image4);
 
 	if (vidas == 0) {
-		// ADICIONAR MENSAGEM DE DERROTA
+		derrotaM();
 		exit(0);
 	}
 }
