@@ -31,6 +31,9 @@ void dialogdoor() {
 			case ALLEGRO_KEY_F:
 				done = true;
 				break;
+			case ALLEGRO_KEY_X:
+				done = true;
+				break;
 			}
 		}
 		al_draw_bitmap(image, Xdialogo, Ydialogo, 0);
@@ -66,6 +69,9 @@ void dialogo() {
 			{
 			case ALLEGRO_KEY_F:
 				numDialogos--;
+				break;
+			case ALLEGRO_KEY_X:
+				numDialogos = 0;
 				break;
 			}
 		}
@@ -113,6 +119,9 @@ void dialog2() {
 			case ALLEGRO_KEY_F:
 				numDialogos--;
 				break;
+			case ALLEGRO_KEY_X:
+				numDialogos = 0;
+				break;
 			}
 		}
 		if (numDialogos == 2) {
@@ -156,6 +165,9 @@ void dialog3() {
 			case ALLEGRO_KEY_F:
 				done = true;
 				break;
+			case ALLEGRO_KEY_X:
+				done = true;
+				break;
 			}
 		}
 		al_draw_bitmap(image, Xdialogo, Ydialogo, 0);
@@ -192,6 +204,9 @@ void dialog4() {
 			{
 			case ALLEGRO_KEY_F:
 				numDialogos--;
+				break;
+			case ALLEGRO_KEY_X:
+				numDialogos = 0;
 				break;
 			}
 		}
@@ -268,7 +283,10 @@ void dialog5() {
 				case ALLEGRO_KEY_F:
 					numDialogos--;
 					break; 
-			} 
+				case ALLEGRO_KEY_X:
+					numDialogos = 0;
+					break;
+			}
 		}
 		
 		if (numDialogos == 17) {
@@ -395,6 +413,9 @@ void dialog6() {
 			case ALLEGRO_KEY_F:
 				numDialogos--;
 				break;
+			case ALLEGRO_KEY_X:
+				numDialogos = 0;
+				break;
 			}
 		}
 
@@ -486,6 +507,9 @@ void dialogFinal() {
 			case ALLEGRO_KEY_F:
 				numDialogos--;
 				break;
+			case ALLEGRO_KEY_X:
+				numDialogos = 0;
+				break;
 			}
 		}
 		if (numDialogos == 2) {
@@ -529,6 +553,9 @@ void dialogCheck() {
 			case ALLEGRO_KEY_F:
 				done = true;
 				break;
+			case ALLEGRO_KEY_X:
+				done = true;
+				break;
 			}
 		}
 		al_draw_bitmap(image, Xdialogo, Ydialogo, 0);
@@ -561,6 +588,9 @@ void dialogAfterBoss() {
 			switch (ev.keyboard.keycode)
 			{
 			case ALLEGRO_KEY_F:
+				done = true;
+				break;
+			case ALLEGRO_KEY_X:
 				done = true;
 				break;
 			}

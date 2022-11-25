@@ -228,7 +228,11 @@ int main(void)
 			boss(ptr, ptrv);
 			CountDialogo++;
 		}
-		else if (CountDialogo == 5 && ptr->pos_x == 576 && ptr->escolhaMapa == 4) {
+		else if (CountDialogo == 5 && ptr->pos_x == 64 && ptr->escolhaMapa == 3) {
+			dialogAfterBoss();
+			CountDialogo++;
+		}
+		else if (CountDialogo == 6 && ptr->pos_x == 576 && ptr->escolhaMapa == 4) {
 			dialogFinal();
 			CountDialogo++;
 		}
