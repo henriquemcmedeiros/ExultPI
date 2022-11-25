@@ -117,7 +117,7 @@ int** geraMapas(int mapa) {
             }
             else {
                 fprintf(stderr, "Nao foi possivel iniciar o mapa\n");
-                return -1;
+                exit(0);
             }
         }
     }
@@ -254,6 +254,7 @@ int colisao(mapa* ptr, int mapa, int minigameAtual, vida* ptrv) {
 		}
 		// Fechar mapa
 		if (ptr->pos_x == 32 * 7 && ptr->pos_y == 32 * 5) {
+			vitoriaM();
 			ptr->done = true;
 		}
 	}
