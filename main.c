@@ -128,7 +128,7 @@ int main(void)
 		{
 			portasLogicasM();
 			contadorMenus++;
-		}
+		} 
 
 		if (ev.type == ALLEGRO_EVENT_KEY_DOWN) {
 			switch (ev.keyboard.keycode) {
