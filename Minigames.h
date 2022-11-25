@@ -21,7 +21,7 @@ void minigameHub(int minigame, vida* ptrv) {
 	}
 }
 
-int vidaAtual(int vidas)
+int vidaAtual(int vidas, bool boss)
 {
 	ALLEGRO_BITMAP* image2 = NULL;
 	ALLEGRO_BITMAP* image3 = NULL;
@@ -31,15 +31,15 @@ int vidaAtual(int vidas)
 	image3 = al_load_bitmap("sangue/sangue3.png");
 	image4 = al_load_bitmap("sangue/sangue1.png");
 
-	if (vidas == 3) {
+	if (vidas == 3 && !boss) {
 		al_draw_bitmap(image4, 0, 0, 0);
 	}
 
-	if (vidas == 2) {
+	if (vidas == 2 && !boss) {
 		al_draw_bitmap(image2, 0, 0, 0);
 	}
 
-	if (vidas == 1) {
+	if (vidas == 1 && !boss) {
 		al_draw_bitmap(image3, 0, 0, 0);
 	}
 
@@ -88,7 +88,7 @@ void minigame1(vida* ptrv) {
 			}
 		}
 		al_clear_to_color(al_map_rgb(80, 58, 101));
-		vidaAtual(ptrv->vida);
+		vidaAtual(ptrv->vida, false);
 		al_draw_bitmap(image, 100, 40, 0);
 		al_flip_display();
 	}
@@ -132,7 +132,7 @@ void minigame2(vida* ptrv) {
 			}
 		}
 		al_clear_to_color(al_map_rgb(80, 58, 101));
-		vidaAtual(ptrv->vida);
+		vidaAtual(ptrv->vida, false);
 		al_draw_bitmap(image, 100, 40, 0);
 		al_flip_display();
 	}
@@ -176,7 +176,7 @@ void minigame3(vida* ptrv) {
 			}
 		}
 		al_clear_to_color(al_map_rgb(80, 58, 101));
-		vidaAtual(ptrv->vida);
+		vidaAtual(ptrv->vida, false);
 		al_draw_bitmap(image, 100, 40, 0);
 		al_flip_display();
 	}
@@ -186,13 +186,13 @@ void minigame3(vida* ptrv) {
 }
 
 
-void boss(vida* ptrv) {
+void boss(mapa* ptr, vida* ptrv) {
 	ptrv->done = false;
 
 	ALLEGRO_EVENT_QUEUE* event_queue = NULL;
 	ALLEGRO_BITMAP* image = NULL;
 
-	image = al_load_bitmap("mingame/boss.jpg");
+	image = al_load_bitmap("mingame/BOSS.png");
 
 	event_queue = al_create_event_queue();
 	al_register_event_source(event_queue, al_get_keyboard_event_source());
@@ -205,15 +205,12 @@ void boss(vida* ptrv) {
 		if (ev.type == ALLEGRO_EVENT_KEY_DOWN)
 		{
 			switch (ev.keyboard.keycode)
-			{s
-			case ALLEGRO_KEY_S:
-				ptrv->vida--;
-				break;
+			{
 			case ALLEGRO_KEY_V:
 				ptrv->done = true;
 				break;
-			case ALLEGRO_KEY_M:
-				ptrv->vida--;
+			case ALLEGRO_KEY_F:
+				ptrv->vida = 0;
 				break;
 			case ALLEGRO_KEY_ESCAPE:
 				ptrv->done = true;
@@ -221,8 +218,8 @@ void boss(vida* ptrv) {
 			}
 		}
 		al_clear_to_color(al_map_rgb(80, 58, 101));
-		vidaAtual(ptrv->vida);
-		al_draw_bitmap(image, 100, 40, 0);
+		al_draw_bitmap(image, 0, 0, 0);
+		vidaAtual(ptrv->vida, true);
 		al_flip_display();
 	}
 

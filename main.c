@@ -204,6 +204,7 @@ int main(void)
 		}
 		else if (CountDialogo == 4 && (ptr->pos_x == 416 || ptr->pos_y == 192) && ptr->escolhaMapa == 3) {
 			dialog6();
+			boss(ptr, ptrv);
 			CountDialogo++;
 		}
 		else if (CountDialogo == 5 && ptr->pos_x == 576 && ptr->escolhaMapa == 4) {
@@ -217,6 +218,7 @@ int main(void)
 
 	// ------ FINALIZACOES e DESTROYS ------
 	limparMapas(ptr->map);
+	free(ptrv);
 	free(ptr);
 	al_destroy_bitmap(bgSheet);
 	al_destroy_sample(trilha_sonora);
