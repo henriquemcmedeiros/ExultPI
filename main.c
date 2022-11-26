@@ -15,7 +15,7 @@ int main(void)
 	mapa *ptr = (mapa*)malloc(sizeof(mapa));
 	vida* ptrv = (vida*)malloc(sizeof(vida));
 
-	// Declarando variáveis
+	// ------ Declarando variáveis ------
 	// Altura e largura da tela
 	int width = 640;
 	int height = 480;
@@ -24,40 +24,30 @@ int main(void)
 	ptr->pos_x = 288;
 	ptr->pos_y = 224;
 
-	// Mapa
-	int mapColumns = 20;
-	int mapRows = 15;
-	int tileSize = 32;
 	ptr->escolhaMapa = 1;
+	bool tutorialAssistido = false;
 
 	int minigameAtual = 0;
-	int contadorMenus = 0;
+	int CountMenus = 0;
 	int CountDialogo = 0;
 
 	ptrv->vida = 3;
 
 	int direcao = UP;
 	int velocidade = 4;
-	const float FPS = 60.0;
+	const float FPS = 60;
 
 	bool draw = true;
-	bool active = false;
 
 	bool keys[4] = {false, false, false, false};
 
-	// Váriáveis do allegro
+	// ------ Váriáveis do allegro ------
 	ALLEGRO_DISPLAY* display = NULL;
 	ALLEGRO_EVENT_QUEUE* event_queue = NULL;
-	ALLEGRO_BITMAP* bgSheet = NULL;							 //Mapa
-	// ------ Menus ------
-	ALLEGRO_BITMAP* inicio = NULL;
-	ALLEGRO_BITMAP* tutorial = NULL;
-	ALLEGRO_BITMAP* portasLogicas = NULL;
-	ALLEGRO_BITMAP* vitoria = NULL;
-	ALLEGRO_BITMAP* derrota = NULL;
-	// ------ Playrer ------
-	ALLEGRO_BITMAP* Player = NULL; /// alocando memoria e inserindo dados 
-	//ALLEGRO_TIMER* timer = al_create_timer(1.0 / FPS);
+	// Mapa
+	ALLEGRO_BITMAP* bgSheet = NULL;
+	// Player
+	ALLEGRO_BITMAP* Player = NULL; // alocando memoria e inserindo dados 
 	ALLEGRO_KEYBOARD_STATE keyState;
 
 	if (!al_init()) {                                        //Teste iniciação allegro
@@ -71,7 +61,7 @@ int main(void)
 	al_init_primitives_addon();
 	al_init_image_addon();
 	al_install_keyboard();
-	al_reserve_samples(15);									//"quantos audios vai ter no jogo"
+	al_reserve_samples(15);									 //"quantos audios vai ter no jogo"
 
 	display = al_create_display(width, height);              //criando display
 
@@ -84,7 +74,6 @@ int main(void)
 	al_set_window_title(display, "Exult");
 
 	Player = al_load_bitmap("player.png");
-	
 	bgSheet = al_load_bitmap("assets/Full.png");			// Puxando os tiles
 
 	// ------ Criação de filas ------
@@ -102,12 +91,10 @@ int main(void)
 	inst_trilha_sonora = al_create_sample_instance(trilha_sonora); //instancia ela
 	al_attach_sample_instance_to_mixer(inst_trilha_sonora, al_get_default_mixer()); //faz com que ela fique num padrao ja definido poupando trabalho
 	al_set_sample_instance_playmode(inst_trilha_sonora, ALLEGRO_PLAYMODE_LOOP); //coloca a soundtrack em loop
-	al_set_sample_instance_gain(inst_trilha_sonora, 0); // VOLUME trilha sonora
+	al_set_sample_instance_gain(inst_trilha_sonora, 0.25); // VOLUME trilha sonora
 
 	al_register_event_source(event_queue, al_get_keyboard_event_source());
 	al_register_event_source(event_queue, al_get_display_event_source(display));
-
-	//al_start_timer(timer);
 
 	// Gera mapa1 como padrão
 	ptr->map = geraMapas(ptr->escolhaMapa);
@@ -120,33 +107,17 @@ int main(void)
 		al_play_sample_instance(inst_trilha_sonora);
 		al_get_keyboard_state(&keyState);
 
-		// Endereço dos tiles no display
-		int linha = 0;
-		int coluna = 0;
-
-		// Endereço do tileset
-		int sourceY = 0;
-		int sourceX = 0;
-
-		int sourcePX = 0;
-		int sourcePY = 0;
-
-		if (contadorMenus == 0) {
+		int sourcePlayerX = 0;
+		int sourcePlayerY = 0;
+		
+		if (!tutorialAssistido) {
 			inicioM();
-			contadorMenus++;
-		}
-		if (contadorMenus == 1) {
 			tutorialM();
-			contadorMenus++;
-		}
-		if (contadorMenus == 2)
-		{
 			portasLogicasM();
-			contadorMenus++;
+			tutorialAssistido = true;
 		} 
 
 		if (ev.type == ALLEGRO_EVENT_KEY_DOWN) {
-			active = true;
 			draw = true;
 			switch (ev.keyboard.keycode) {
 			case ALLEGRO_KEY_UP: case ALLEGRO_KEY_W:
@@ -159,19 +130,19 @@ int main(void)
 				break;
 			case ALLEGRO_KEY_LEFT: case ALLEGRO_KEY_A:
 				keys[LEFT] = true;
-				direcao = RIGHT;
+				direcao = LEFT;
 				break;
 			case ALLEGRO_KEY_RIGHT: case ALLEGRO_KEY_D:
 				keys[RIGHT] = true;
-				direcao = LEFT;
+				direcao = RIGHT;
 				break;
 			case ALLEGRO_KEY_F2:
 				minigameAtual = 4;
 				break;
 				}
 		}
-		if (sourcePX >= al_get_bitmap_width(Player)) {
-				sourcePX = 0;
+		if (sourcePlayerX >= al_get_bitmap_width(Player)) {
+				sourcePlayerX = 0;
 		}
 		else if (ev.type == ALLEGRO_EVENT_KEY_UP)
 		{
@@ -211,24 +182,14 @@ int main(void)
 		// Troca de mapas
 		trocarMapas(ptr);
 
-		// Desenha os mapas na tela
-		for (int i = 0; i < mapRows; i++) {
-			for (int j = 0; j < mapColumns; j++) {
-				int val = ptr->map[i][j];
-				sourceX = val / 10;
-				sourceY = val % 10;
-				al_draw_bitmap_region(bgSheet, tileSize * sourceX, tileSize * sourceY, tileSize, tileSize, coluna, linha, 0);
-				coluna += 32;
-			}
-			linha += 32;
-			coluna = 0;
-		}
+		// Desenha o mapa
+		desenhaMapas(ptr, bgSheet);
+		
 		if (draw) {
 			// al_draw_bitmap(Player, x, y, NULL);
-			al_draw_bitmap_region(Player, sourcePX, direcao * al_get_bitmap_height(Player) / 4, 26, 32, ptr->pos_x, ptr->pos_y, NULL);
+			al_draw_bitmap_region(Player, sourcePlayerX, direcao * al_get_bitmap_height(Player) / 4, 26, 32, ptr->pos_x, ptr->pos_y, NULL);
 			al_flip_display();
 		}
-
 
 		// ------ DIALOGOS GAMBIARRA ------
 		if (CountDialogo == 0) {
@@ -268,15 +229,10 @@ int main(void)
 	}
 
 	// ------ FINALIZACOES e DESTROYS ------
-	limparMapas(ptr->map);
 	free(ptrv);
 	free(ptr);
+	limparMapas(ptr->map);
 	al_destroy_bitmap(bgSheet);
-	al_destroy_bitmap(inicio);
-	al_destroy_bitmap(tutorial);
-	al_destroy_bitmap(portasLogicas);
-	al_destroy_bitmap(vitoria);
-	al_destroy_bitmap(derrota);
 	al_destroy_bitmap(Player);
 	al_destroy_sample(trilha_sonora);
 	al_destroy_sample_instance(inst_trilha_sonora);

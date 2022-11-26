@@ -260,3 +260,31 @@ int colisao(mapa* ptr, int mapa, int minigameAtual, vida* ptrv) {
 	}
 	return max(minigameAtual, 0);
 }
+
+void desenhaMapas(mapa* ptr, ALLEGRO_BITMAP* bgSheet) {
+	// Mapa
+	int mapColumns = 20;
+	int mapRows = 15;
+	int tileSize = 32;
+
+	// Endereço dos tiles no display
+	int linha = 0;
+	int coluna = 0;
+
+	// Endereço do tileset
+	int sourceY = 0;
+	int sourceX = 0;
+
+	// Desenha os mapas na tela
+	for (int i = 0; i < mapRows; i++) {
+		for (int j = 0; j < mapColumns; j++) {
+			int val = ptr->map[i][j];
+			sourceX = val / 10;
+			sourceY = val % 10;
+			al_draw_bitmap_region(bgSheet, tileSize * sourceX, tileSize * sourceY, tileSize, tileSize, coluna, linha, 0);
+			coluna += 32;
+		}
+		linha += 32;
+		coluna = 0;
+	}
+}
