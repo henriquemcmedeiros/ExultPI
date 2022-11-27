@@ -9,8 +9,7 @@ void minigameHub(int minigame, vida* ptrv);
 
 void minigameHub(int minigame, vida* ptrv) {
 	if (minigame == 1) {
-		dialog4();
-		dialog5();
+		dialogo(4);
 		minigame1(ptrv);
 	}
 	else if (minigame == 2) {

@@ -3,10 +3,10 @@
 
 // ------ Variaveis globais ------
 ALLEGRO_SAMPLE* trilha_sonora = NULL;
-ALLEGRO_SAMPLE* passos = NULL;
+ALLEGRO_SAMPLE* sound = NULL;
 
 ALLEGRO_SAMPLE_INSTANCE* inst_trilha_sonora = NULL;				//instanciar evita conflitos e permite functions a mais
-ALLEGRO_SAMPLE_INSTANCE* inst_passos = NULL;
+ALLEGRO_SAMPLE_INSTANCE* inst_Sound = NULL;
 
 enum KEYS {UP, DOWN, LEFT, RIGHT};
 
