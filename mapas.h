@@ -7,7 +7,6 @@ void limparMapas(int** mapa);
 void trocarMapas(mapa* ptr);
 int colisao(mapa* ptr, int mapa, int minigameAtual, vida* ptrv);
 
-
 // Declaração da altura e largura fixas com o padrão 32bits
 const int altura = 15;
 const int largura = 20;

@@ -7,6 +7,45 @@ void dialog3();
 void dialog4();
 void dialog5();
 void dialog6();
+void dialogFinal();
+void dialogCheck();
+void dialogAfterBoss();
+
+void dialogHub(mapa* ptr, vida* ptrv, movimento* ptrm, mapa* CountDialogo) {
+	// ------ DIALOGOS ------
+	if (ptrm->CountDialogo == 0) {
+		dialogo();
+		ptrm->CountDialogo++;
+	}
+	else if (ptrm->CountDialogo == 1 && ptr->pos_x == 544) {
+		dialog2();
+		ptrm->CountDialogo++;
+	}
+	else if (ptrm->CountDialogo == 2 && ptr->pos_x == 32 && ptr->escolhaMapa == 2) {
+		dialog3();
+		ptrm->CountDialogo++;
+	}
+	else if (ptrm->CountDialogo == 3 && ptr->pos_y == 416 && ptr->escolhaMapa == 2 && ptrm->minigameAtual <= 3) {
+		ptr->pos_y = min(384, ptr->pos_y);
+		dialogCheck();
+	}
+	else if (ptrm->minigameAtual >= 3 && ptrm->CountDialogo == 3) {
+		ptrm->CountDialogo++;
+	}
+	else if (ptrm->CountDialogo == 4 && (ptr->pos_x == 416 || ptr->pos_y == 192) && ptr->escolhaMapa == 3) {
+		dialog6();
+		boss(ptr, ptrv);
+		ptrm->CountDialogo++;
+	}
+	else if (ptrm->CountDialogo == 5 && ptr->pos_x == 64 && ptr->escolhaMapa == 3) {
+		dialogAfterBoss();
+		ptrm->CountDialogo++;
+	}
+	else if (ptrm->CountDialogo == 6 && ptr->pos_x == 576 && ptr->escolhaMapa == 4) {
+		dialogFinal();
+		ptrm->CountDialogo++;
+	}
+}
 
 void dialogdoor() {
 	bool done = false;
@@ -230,7 +269,7 @@ void dialog4() {
 
 void dialog5() {
 	bool done = false;
-	int numDialogos = 17;
+	int numDialogos = 19;
 
 	ALLEGRO_EVENT_QUEUE* event_queue = NULL;
 

@@ -1,7 +1,7 @@
 #include "header.h"
 #include "Dialogo.h"
 
-int vidaAtual(int vida);
+int vidaAtual(int vida, bool boss);
 void minigame1(vida* ptrv);
 void minigame2(vida* ptrv);
 void minigame3(vida* ptrv);
@@ -185,8 +185,7 @@ void minigame3(vida* ptrv) {
 	al_destroy_event_queue(event_queue);
 }
 
-
-void boss(mapa* ptr, vida* ptrv) {
+int boss(mapa* ptr, vida* ptrv) {
 	ptrv->done = false;
 
 	ALLEGRO_EVENT_QUEUE* event_queue = NULL;
