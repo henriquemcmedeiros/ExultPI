@@ -24,6 +24,8 @@ int main(void)
 	int height = 480;
 	
 	ptr->done = false;
+
+	// Posição inicial do personagem
 	ptr->pos_x = 288;
 	ptr->pos_y = 224;
 
@@ -112,8 +114,8 @@ int main(void)
 		al_get_keyboard_state(&keyState);
 
 		int sourcePlayerX = 0;
-		int sourcePlayerY = 0;
 		
+		// ------ Tutorial ------
 		if (!tutorialAssistido) {
 			inicioM();
 			tutorialM();
@@ -123,10 +125,6 @@ int main(void)
 
 		// Movimentação do personagem principal
 		movimentos(ptr, ptrv, ptrm, ev);
-
-		if (sourcePlayerX >= al_get_bitmap_width(Player)) {
-			sourcePlayerX = 0;
-		}
 
 		// Posição e velocidade do personagem
 		ptr->pos_y -= ptrm->keys[UP] * velocidade;
@@ -143,6 +141,7 @@ int main(void)
 		// Desenha o mapa
 		desenhaMapas(ptr, bgSheet);
 		
+		// Desenha o personagem
 		if (ptrm->draw) {
 			al_draw_bitmap_region(Player, sourcePlayerX, ptrm->direcao * al_get_bitmap_height(Player) / 4, 26, 32, ptr->pos_x, ptr->pos_y, NULL);
 			al_flip_display();

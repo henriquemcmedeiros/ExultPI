@@ -1,6 +1,5 @@
 #include "header.h"
 
-void dialogdoor();
 void dialogo(int CountDialogo);
 
 void dialogo(int CountDialogo) {
