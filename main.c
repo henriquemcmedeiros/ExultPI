@@ -56,7 +56,6 @@ int main(void)
 	ALLEGRO_KEYBOARD_STATE keyState;
 
 	if (!al_init()) {                                       // Teste iniciação allegro
-	if (!al_init()) {                                       // Teste iniciação allegro
 		fprintf(stderr, "Falha ao iniciar o Allegro\n");
 		return -1;
 	}

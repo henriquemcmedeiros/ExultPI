@@ -34,12 +34,10 @@ int vidaAtual(int vidas, bool boss)
 	if (vidas == 3 && !boss) {
 		al_draw_bitmap(image4, 0, 0, 0);
 	}
-
-	if (vidas == 2 && !boss) {
+	else if (vidas == 2 && !boss) {
 		al_draw_bitmap(image2, 0, 0, 0);
 	}
-
-	if (vidas == 1 && !boss) {
+	else if (vidas == 1 && !boss) {
 		al_draw_bitmap(image3, 0, 0, 0);
 	}
 
