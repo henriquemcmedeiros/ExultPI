@@ -2,7 +2,7 @@
 
 void dialogo(int CountDialogo);
 
-void dialogo(int CountDialogo) {
+void dialogo(int CountDialogo, audio* ptra) {
 	bool done = false;
 	int numDialogos = 0;
 	int quantDialogos = 1;
@@ -110,19 +110,24 @@ void dialogo(int CountDialogo) {
 	event_queue = al_create_event_queue();
 	al_register_event_source(event_queue, al_get_keyboard_event_source());
 
+	al_play_sample_instance(ptra->inst[4]);
 	while (!done)
 	{
 		ALLEGRO_EVENT ev;
 		al_wait_for_event(event_queue, &ev);
-
+		
 		if (ev.type == ALLEGRO_EVENT_KEY_DOWN)
 		{
 			switch (ev.keyboard.keycode)
 			{
 			case ALLEGRO_KEY_F:
+				al_stop_sample_instance(ptra->inst[4]);
+				al_play_sample_instance(ptra->inst[4]);
 				numDialogos++;
 				break;
 			case ALLEGRO_KEY_X:
+				al_stop_sample_instance(ptra->inst[4]);
+				al_play_sample_instance(ptra->inst[4]);
 				done = true;
 				break;
 			}
@@ -214,41 +219,42 @@ void dialogo(int CountDialogo) {
 	al_destroy_bitmap(image18);
 	al_destroy_bitmap(image19);
 	al_destroy_event_queue(event_queue);
+
 }
 
-void dialogHub(mapa* ptr, vida* ptrv, movimento* ptrm, mapa* CountDialogo) {
+void dialogHub(mapa* ptr, vida* ptrv, movimento* ptrm, mapa* CountDialogo, audio* ptra) {
 	// ------ DIALOGOS ------
 	if (ptrm->CountDialogo == 0) {
-		dialogo(1);
+		dialogo(1, ptra);
 		ptrm->CountDialogo++;
 	}
 	else if (ptrm->CountDialogo == 1 && ptr->pos_x == 544) {
-		dialogo(2);
+		dialogo(2, ptra);
 		ptrm->CountDialogo++;
 	}
 	else if (ptrm->CountDialogo == 2 && ptr->pos_x == 32 && ptr->escolhaMapa == 2) {
-		dialogo(3);
+		dialogo(3, ptra);
 		ptrm->CountDialogo++;
 	}
 	else if (ptrm->CountDialogo == 3 && ptr->pos_y == 416 && ptr->escolhaMapa == 2 && ptrm->minigameAtual <= 3) {
 		ptr->pos_y = min(384, ptr->pos_y);
-		dialogo(8);
+		dialogo(8, ptra);
 	}
 	else if (ptrm->minigameAtual >= 3 && ptrm->CountDialogo == 3) {
 		ptrm->CountDialogo++;
 	}
 	else if (ptrm->CountDialogo == 4 && (ptr->pos_x == 416 || ptr->pos_y == 192) && ptr->escolhaMapa == 3) {
-		dialogo(5);
+		dialogo(5, ptra);
 		readyM();
 		boss(ptr, ptrv);
 		ptrm->CountDialogo++;
 	}
 	else if (ptrm->CountDialogo == 5 && ptr->pos_x == 64 && ptr->escolhaMapa == 3) {
-		dialogo(6);
+		dialogo(6, ptra);
 		ptrm->CountDialogo++;
 	}
 	else if (ptrm->CountDialogo == 6 && ptr->pos_x == 576 && ptr->escolhaMapa == 4) {
-		dialogo(7);
+		dialogo(7, ptra);
 		ptrm->CountDialogo++;
 	}
 }
