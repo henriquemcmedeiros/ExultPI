@@ -56,7 +56,7 @@ void dialogo(int CountDialogo, audio* ptra) {
 		image6 = al_load_bitmap("Bitmapsdialogue/dial4.3.2.jpg");
 		image7 = al_load_bitmap("Bitmapsdialogue/dial4.4.1.jpg");
 		image8 = al_load_bitmap("Bitmapsdialogue/dial4.4.2.jpg");
-		image9 = al_load_bitmap("Bitmapsdialogue/dial4.5.1.jpg");
+		image9 = al_load_bitmap("Bitmapsdialogue/dial4.5.1.png");
 		image10 = al_load_bitmap("Bitmapsdialogue/dial4.5.2.jpg");
 		image11 = al_load_bitmap("Bitmapsdialogue/dial4.6.1.jpg");
 		image12 = al_load_bitmap("Bitmapsdialogue/dial4.6.2.jpg");
