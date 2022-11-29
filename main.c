@@ -110,7 +110,6 @@ int main(void)
 	while (!ptr->done)
 	{
 		ALLEGRO_EVENT ev;									//evento das teclas para MOVIMENTAÇÃO
-
 		al_wait_for_event(event_queue, &ev);
 		al_play_sample_instance(inst_trilha_sonora);
 		al_get_keyboard_state(&keyState);
