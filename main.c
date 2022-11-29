@@ -3,64 +3,61 @@
 
 // ------ Variaveis globais ------
 ALLEGRO_SAMPLE* trilha_sonora = NULL;
-ALLEGRO_SAMPLE* passos = NULL;
+ALLEGRO_SAMPLE* sound = NULL;
 
 ALLEGRO_SAMPLE_INSTANCE* inst_trilha_sonora = NULL;				//instanciar evita conflitos e permite functions a mais
-ALLEGRO_SAMPLE_INSTANCE* inst_passos = NULL;
+ALLEGRO_SAMPLE_INSTANCE* inst_Sound = NULL;
 
 enum KEYS {UP, DOWN, LEFT, RIGHT};
 
+void movimentos(mapa* ptr, vida* ptrv, movimento* ptrm, ALLEGRO_EVENT ev);
+
 int main(void)
 {
-	mapa *ptr = (mapa*)malloc(sizeof(mapa));
+	mapa* ptr = (mapa*)malloc(sizeof(mapa));
 	vida* ptrv = (vida*)malloc(sizeof(vida));
+	movimento* ptrm = (movimento*)malloc(sizeof(movimento));
 
-	// Declarando variáveis
+	// ------ Declarando variáveis ------
 	// Altura e largura da tela
 	int width = 640;
 	int height = 480;
 	
 	ptr->done = false;
+
+	// Posição inicial do personagem
 	ptr->pos_x = 288;
 	ptr->pos_y = 224;
 
-	// Mapa
-	int mapColumns = 20;
-	int mapRows = 15;
-	int tileSize = 32;
 	ptr->escolhaMapa = 1;
+	ptrm->CountDialogo = 0;
 
-	int minigameAtual = 0;
-	int contadorMenus = 0;
-	int CountDialogo = 0;
+	bool tutorialAssistido = false;
+
+	ptrm->minigameAtual = 0;
+	int CountMenus = 0;
 
 	ptrv->vida = 3;
 
-	int direcao = UP;
+	ptrm->direcao = UP;
 	int velocidade = 4;
-	const float FPS = 60.0;
+	const float FPS = 60;
 
-	bool draw = true;
-	bool active = false;
+	ptrm->draw = true;
 
-	bool keys[4] = {false, false, false, false};
+	ptrm->keys[0] = false;
+	ptrm->keys[1] = false;
+	ptrm->keys[2] = false;
+	ptrm->keys[3] = false;
 
-	// Váriáveis do allegro
+	// ------ Váriáveis do allegro ------
 	ALLEGRO_DISPLAY* display = NULL;
 	ALLEGRO_EVENT_QUEUE* event_queue = NULL;
-	ALLEGRO_BITMAP* bgSheet = NULL;							 //Mapa
-	// ------ Menus ------
-	ALLEGRO_BITMAP* inicio = NULL;
-	ALLEGRO_BITMAP* tutorial = NULL;
-	ALLEGRO_BITMAP* portasLogicas = NULL;
-	ALLEGRO_BITMAP* vitoria = NULL;
-	ALLEGRO_BITMAP* derrota = NULL;
-	// ------ Playrer ------
-	ALLEGRO_BITMAP* Player = NULL; /// alocando memoria e inserindo dados 
-	//ALLEGRO_TIMER* timer = al_create_timer(1.0 / FPS);
+	ALLEGRO_BITMAP* bgSheet = NULL;							// Mapa
+	ALLEGRO_BITMAP* Player = NULL;							// Player
 	ALLEGRO_KEYBOARD_STATE keyState;
 
-	if (!al_init()) {                                        //Teste iniciação allegro
+	if (!al_init()) {                                       // Teste iniciação allegro
 		fprintf(stderr, "Falha ao iniciar o Allegro\n");
 		return -1;
 	}
@@ -71,7 +68,7 @@ int main(void)
 	al_init_primitives_addon();
 	al_init_image_addon();
 	al_install_keyboard();
-	al_reserve_samples(15);									//"quantos audios vai ter no jogo"
+	al_reserve_samples(15);									 //"quantos audios vai ter no jogo"
 
 	display = al_create_display(width, height);              //criando display
 
@@ -84,7 +81,6 @@ int main(void)
 	al_set_window_title(display, "Exult");
 
 	Player = al_load_bitmap("player.png");
-	
 	bgSheet = al_load_bitmap("assets/Full.png");			// Puxando os tiles
 
 	// ------ Criação de filas ------
@@ -93,7 +89,6 @@ int main(void)
 	if (!event_queue) {
 		fprintf(stderr, "Falha ao criar fila de evento\n");	// Teste fila de eventos
 		al_destroy_display(display);
-
 		return -1;
 	}
 
@@ -102,12 +97,10 @@ int main(void)
 	inst_trilha_sonora = al_create_sample_instance(trilha_sonora); //instancia ela
 	al_attach_sample_instance_to_mixer(inst_trilha_sonora, al_get_default_mixer()); //faz com que ela fique num padrao ja definido poupando trabalho
 	al_set_sample_instance_playmode(inst_trilha_sonora, ALLEGRO_PLAYMODE_LOOP); //coloca a soundtrack em loop
-	al_set_sample_instance_gain(inst_trilha_sonora, 0); // VOLUME trilha sonora
+	al_set_sample_instance_gain(inst_trilha_sonora, 0.25); // VOLUME trilha sonora
 
 	al_register_event_source(event_queue, al_get_keyboard_event_source());
 	al_register_event_source(event_queue, al_get_display_event_source(display));
-
-	//al_start_timer(timer);
 
 	// Gera mapa1 como padrão
 	ptr->map = geraMapas(ptr->escolhaMapa);
@@ -120,167 +113,108 @@ int main(void)
 		al_play_sample_instance(inst_trilha_sonora);
 		al_get_keyboard_state(&keyState);
 
-		// Endereço dos tiles no display
-		int linha = 0;
-		int coluna = 0;
-
-		// Endereço do tileset
-		int sourceY = 0;
-		int sourceX = 0;
-
-		int sourcePX = 0;
-		int sourcePY = 0;
-
-		if (contadorMenus == 0) {
+		int sourcePlayerX = 0;
+		
+		// ------ Tutorial ------
+		if (!tutorialAssistido) {
 			inicioM();
-			contadorMenus++;
-		}
-		if (contadorMenus == 1) {
 			tutorialM();
-			contadorMenus++;
-		}
-		if (contadorMenus == 2)
-		{
 			portasLogicasM();
-			contadorMenus++;
-		} 
+			tutorialAssistido = true;
+		}
 
-		if (ev.type == ALLEGRO_EVENT_KEY_DOWN) {
-			active = true;
-			draw = true;
-			switch (ev.keyboard.keycode) {
-			case ALLEGRO_KEY_UP: case ALLEGRO_KEY_W:
-				keys[UP] = true;
-				direcao = DOWN;
-				break;
-			case ALLEGRO_KEY_DOWN: case ALLEGRO_KEY_S:
-				keys[DOWN] = true;
-				direcao = UP;
-				break;
-			case ALLEGRO_KEY_LEFT: case ALLEGRO_KEY_A:
-				keys[LEFT] = true;
-				direcao = RIGHT;
-				break;
-			case ALLEGRO_KEY_RIGHT: case ALLEGRO_KEY_D:
-				keys[RIGHT] = true;
-				direcao = LEFT;
-				break;
-			case ALLEGRO_KEY_F2:
-				minigameAtual = 4;
-				break;
-				}
-		}
-		if (sourcePX >= al_get_bitmap_width(Player)) {
-				sourcePX = 0;
-		}
-		else if (ev.type == ALLEGRO_EVENT_KEY_UP)
-		{
-			switch (ev.keyboard.keycode)
-			{
-			case ALLEGRO_KEY_UP: case ALLEGRO_KEY_W:
-				keys[UP] = false;
-				break;
-			case ALLEGRO_KEY_DOWN: case ALLEGRO_KEY_S:
-				keys[DOWN] = false;
-				break;
-			case ALLEGRO_KEY_LEFT: case ALLEGRO_KEY_A:
-				keys[LEFT] = false;
-				break;
-			case ALLEGRO_KEY_RIGHT: case ALLEGRO_KEY_D:
-				keys[RIGHT] = false;
-				break;
-			case ALLEGRO_KEY_ESCAPE:
-				ptr->done = true;
-				break;
-			}
-		}
-		else if (ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE)  //para fechar o display ao apertar o X
-		{
-			ptr->done = true;
-		}
+		// Movimentação do personagem principal
+		movimentos(ptr, ptrv, ptrm, ev);
 
 		// Posição e velocidade do personagem
-		ptr->pos_y -= keys[UP] * velocidade;
-		ptr->pos_y += keys[DOWN] * velocidade;
-		ptr->pos_x -= keys[LEFT] * velocidade;
-		ptr->pos_x += keys[RIGHT] * velocidade;	
+		ptr->pos_y -= ptrm->keys[UP] * velocidade;
+		ptr->pos_y += ptrm->keys[DOWN] * velocidade;
+		ptr->pos_x -= ptrm->keys[LEFT] * velocidade;
+		ptr->pos_x += ptrm->keys[RIGHT] * velocidade;
 
 		// Colisões
-		minigameAtual = colisao(ptr, ptr->escolhaMapa, minigameAtual, ptrv);
+		ptrm->minigameAtual = colisao(ptr, ptr->escolhaMapa, ptrm->minigameAtual, ptrv);
 
 		// Troca de mapas
 		trocarMapas(ptr);
 
-		// Desenha os mapas na tela
-		for (int i = 0; i < mapRows; i++) {
-			for (int j = 0; j < mapColumns; j++) {
-				int val = ptr->map[i][j];
-				sourceX = val / 10;
-				sourceY = val % 10;
-				al_draw_bitmap_region(bgSheet, tileSize * sourceX, tileSize * sourceY, tileSize, tileSize, coluna, linha, 0);
-				coluna += 32;
-			}
-			linha += 32;
-			coluna = 0;
-		}
-		if (draw) {
-			// al_draw_bitmap(Player, x, y, NULL);
-			al_draw_bitmap_region(Player, sourcePX, direcao * al_get_bitmap_height(Player) / 4, 26, 32, ptr->pos_x, ptr->pos_y, NULL);
+		// Desenha o mapa
+		desenhaMapas(ptr, bgSheet);
+		
+		// Desenha o personagem
+		if (ptrm->draw) {
+			al_draw_bitmap_region(Player, sourcePlayerX, ptrm->direcao * al_get_bitmap_height(Player) / 4, 26, 32, ptr->pos_x, ptr->pos_y, NULL);
 			al_flip_display();
 		}
 
+		// ------ Diálogos ------
+		dialogHub(ptr, ptrv, ptrm, ptrm->CountDialogo);
 
-		// ------ DIALOGOS GAMBIARRA ------
-		if (CountDialogo == 0) {
-			dialogo();
-			CountDialogo++;
-		}
-		else if (CountDialogo == 1 && ptr->pos_x == 544) {
-			dialog2();
-			CountDialogo++;
-		}
-		else if (CountDialogo == 2 && ptr->pos_x == 32 && ptr->escolhaMapa == 2) {
-			dialog3();
-			CountDialogo++;
-		}
-		else if (CountDialogo == 3 && ptr->pos_y == 416 && ptr->escolhaMapa == 2 && minigameAtual <= 3) {
-			ptr->pos_y = min(384, ptr->pos_y);
-			dialogCheck();
-		}
-		else if (minigameAtual >= 3 && CountDialogo == 3) {
-			CountDialogo++;
-		}
-		else if (CountDialogo == 4 && (ptr->pos_x == 416 || ptr->pos_y == 192) && ptr->escolhaMapa == 3) {
-			dialog6();
-			boss(ptr, ptrv);
-			CountDialogo++;
-		}
-		else if (CountDialogo == 5 && ptr->pos_x == 64 && ptr->escolhaMapa == 3) {
-			dialogAfterBoss();
-			CountDialogo++;
-		}
-		else if (CountDialogo == 6 && ptr->pos_x == 576 && ptr->escolhaMapa == 4) {
-			dialogFinal();
-			CountDialogo++;
-		}
 		al_flip_display();
 		al_clear_to_color(al_map_rgb(0, 0, 0));
 	}
 
 	// ------ FINALIZACOES e DESTROYS ------
-	limparMapas(ptr->map);
 	free(ptrv);
 	free(ptr);
+	//limparMapas(ptr->map);
 	al_destroy_bitmap(bgSheet);
-	al_destroy_bitmap(inicio);
-	al_destroy_bitmap(tutorial);
-	al_destroy_bitmap(portasLogicas);
-	al_destroy_bitmap(vitoria);
-	al_destroy_bitmap(derrota);
 	al_destroy_bitmap(Player);
 	al_destroy_sample(trilha_sonora);
 	al_destroy_sample_instance(inst_trilha_sonora);
 	al_destroy_display(display);
 
 	return 0;
+}
+
+void movimentos(mapa* ptr, vida* ptrv, movimento* ptrm, ALLEGRO_EVENT ev) {
+	if (ev.type == ALLEGRO_EVENT_KEY_DOWN) {
+		ptrm->draw = true;
+		switch (ev.keyboard.keycode) {
+		case ALLEGRO_KEY_UP: case ALLEGRO_KEY_W:
+			ptrm->keys[UP] = true;
+			ptrm->direcao = DOWN;
+			break;
+		case ALLEGRO_KEY_DOWN: case ALLEGRO_KEY_S:
+			ptrm->keys[DOWN] = true;
+			ptrm->direcao = UP;
+			break;
+		case ALLEGRO_KEY_LEFT: case ALLEGRO_KEY_A:
+			ptrm->keys[LEFT] = true;
+			ptrm->direcao = LEFT;
+			break;
+		case ALLEGRO_KEY_RIGHT: case ALLEGRO_KEY_D:
+			ptrm->keys[RIGHT] = true;
+			ptrm->direcao = RIGHT;
+			break;
+		case ALLEGRO_KEY_F2:
+			ptrm->minigameAtual = 4;
+			break;
+		}
+	}
+	else if (ev.type == ALLEGRO_EVENT_KEY_UP)
+	{
+		switch (ev.keyboard.keycode)
+		{
+		case ALLEGRO_KEY_UP: case ALLEGRO_KEY_W:
+			ptrm->keys[UP] = false;
+			break;
+		case ALLEGRO_KEY_DOWN: case ALLEGRO_KEY_S:
+			ptrm->keys[DOWN] = false;
+			break;
+		case ALLEGRO_KEY_LEFT: case ALLEGRO_KEY_A:
+			ptrm->keys[LEFT] = false;
+			break;
+		case ALLEGRO_KEY_RIGHT: case ALLEGRO_KEY_D:
+			ptrm->keys[RIGHT] = false;
+			break;
+		case ALLEGRO_KEY_ESCAPE:
+			ptr->done = true;
+			break;
+		}
+	}
+	else if (ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE)  //para fechar o display ao apertar o X
+	{
+		ptr->done = true;
+	}
 }

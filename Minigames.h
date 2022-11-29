@@ -1,7 +1,7 @@
 #include "header.h"
 #include "Dialogo.h"
 
-int vidaAtual(int vida);
+int vidaAtual(int vida, bool boss);
 void minigame1(vida* ptrv);
 void minigame2(vida* ptrv);
 void minigame3(vida* ptrv);
@@ -9,8 +9,7 @@ void minigameHub(int minigame, vida* ptrv);
 
 void minigameHub(int minigame, vida* ptrv) {
 	if (minigame == 1) {
-		dialog4();
-		dialog5();
+		dialogo(4);
 		minigame1(ptrv);
 	}
 	else if (minigame == 2) {
@@ -34,12 +33,10 @@ int vidaAtual(int vidas, bool boss)
 	if (vidas == 3 && !boss) {
 		al_draw_bitmap(image4, 0, 0, 0);
 	}
-
-	if (vidas == 2 && !boss) {
+	else if (vidas == 2 && !boss) {
 		al_draw_bitmap(image2, 0, 0, 0);
 	}
-
-	if (vidas == 1 && !boss) {
+	else if (vidas == 1 && !boss) {
 		al_draw_bitmap(image3, 0, 0, 0);
 	}
 
@@ -185,8 +182,7 @@ void minigame3(vida* ptrv) {
 	al_destroy_event_queue(event_queue);
 }
 
-
-void boss(mapa* ptr, vida* ptrv) {
+int boss(mapa* ptr, vida* ptrv) {
 	ptrv->done = false;
 
 	ALLEGRO_EVENT_QUEUE* event_queue = NULL;

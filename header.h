@@ -26,6 +26,14 @@ typedef struct vidas {
 	bool done;
 } vida;
 
+typedef struct movimentacao {
+	bool draw;
+	bool keys[4];
+	int direcao;
+	int minigameAtual;
+	int CountDialogo;
+} movimento;
+
 int Xdialogo = 27;
 int Ydialogo = 300;
 
