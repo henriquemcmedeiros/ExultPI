@@ -34,7 +34,15 @@ typedef struct movimentacao {
 	int CountDialogo;
 } movimento;
 
+typedef struct audios {
+	ALLEGRO_SAMPLE_INSTANCE* inst[8];
+	ALLEGRO_SAMPLE* sounds[8];
+} audio;
+
+
+
 int Xdialogo = 27;
 int Ydialogo = 300;
+
 
 #endif

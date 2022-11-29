@@ -1,12 +1,9 @@
 #include "header.h"
 #include "mapas.h"
+#include "audios.h"
 
 // ------ Variaveis globais ------
-ALLEGRO_SAMPLE* trilha_sonora = NULL;
-ALLEGRO_SAMPLE* sound = NULL;
 
-ALLEGRO_SAMPLE_INSTANCE* inst_trilha_sonora = NULL;				//instanciar evita conflitos e permite functions a mais
-ALLEGRO_SAMPLE_INSTANCE* inst_Sound = NULL;
 
 enum KEYS {UP, DOWN, LEFT, RIGHT};
 
@@ -17,6 +14,7 @@ int main(void)
 	mapa* ptr = (mapa*)malloc(sizeof(mapa));
 	vida* ptrv = (vida*)malloc(sizeof(vida));
 	movimento* ptrm = (movimento*)malloc(sizeof(movimento));
+	audio* ptra = (audio*)malloc(sizeof(audio));
 
 	// ------ Declarando variáveis ------
 	// Altura e largura da tela
@@ -92,12 +90,7 @@ int main(void)
 		return -1;
 	}
 
-	// ------ Trilha sonora ------
-	trilha_sonora = al_load_sample("Audios/Trilha sonora/trilha-sonora.wav"); //carrega qual arquivo vai tocar
-	inst_trilha_sonora = al_create_sample_instance(trilha_sonora); //instancia ela
-	al_attach_sample_instance_to_mixer(inst_trilha_sonora, al_get_default_mixer()); //faz com que ela fique num padrao ja definido poupando trabalho
-	al_set_sample_instance_playmode(inst_trilha_sonora, ALLEGRO_PLAYMODE_LOOP); //coloca a soundtrack em loop
-	al_set_sample_instance_gain(inst_trilha_sonora, 0.25); // VOLUME trilha sonora
+	sons(ptra);
 
 	al_register_event_source(event_queue, al_get_keyboard_event_source());
 	al_register_event_source(event_queue, al_get_display_event_source(display));
@@ -112,7 +105,7 @@ int main(void)
 		ALLEGRO_EVENT ev;									//evento das teclas para MOVIMENTAÇÃO
 
 		al_wait_for_event(event_queue, &ev);
-		al_play_sample_instance(inst_trilha_sonora);
+		al_play_sample_instance(ptra->inst[0]);
 		al_get_keyboard_state(&keyState);
 
 		int sourcePlayerX = 0;
@@ -135,7 +128,7 @@ int main(void)
 		ptr->pos_x += ptrm->keys[RIGHT] * velocidade;
 
 		// Colisões
-		ptrm->minigameAtual = colisao(ptr, ptr->escolhaMapa, ptrm->minigameAtual, ptrv);
+		ptrm->minigameAtual = colisao(ptr, ptr->escolhaMapa, ptrm->minigameAtual, ptrv, ptra);
 
 		// Troca de mapas
 		trocarMapas(ptr);
@@ -150,7 +143,7 @@ int main(void)
 		}
 
 		// ------ Diálogos ------
-		dialogHub(ptr, ptrv, ptrm, ptrm->CountDialogo);
+		dialogHub(ptr, ptrv, ptrm, ptrm->CountDialogo, ptra);
 
 		// Boss sumindo e aparecendo
 
@@ -169,15 +162,15 @@ int main(void)
 	}
 
 	// ------ FINALIZACOES e DESTROYS ------
+	destroyAudios(ptra);
 	free(ptrv);
 	free(ptr);
+	free(ptra);
+	free(ptrm);
 	//limparMapas(ptr->map);
 	al_destroy_bitmap(bgSheet);
 	al_destroy_bitmap(Player);
-	al_destroy_sample(trilha_sonora);
-	al_destroy_sample_instance(inst_trilha_sonora);
 	al_destroy_display(display);
-
 	return 0;
 }
 

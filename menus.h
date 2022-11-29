@@ -99,7 +99,7 @@ void portasLogicasM() {
 	al_destroy_event_queue(event_queue);
 }
 
-void vitoriaM() {
+void vitoriaM(){
 	bool done = false;
 
 	ALLEGRO_EVENT_QUEUE* event_queue = NULL;

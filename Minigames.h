@@ -7,20 +7,22 @@ void minigame2(vida* ptrv);
 void minigame3(vida* ptrv);
 void minigameHub(int minigame, vida* ptrv);
 
-void minigameHub(int minigame, vida* ptrv) {
+void minigameHub(int minigame, vida* ptrv, audio* ptra) {
 	if (minigame == 1) {
-		dialogo(4);
-		minigame1(ptrv);
+		dialogo(4, ptra);
+		minigame1(ptrv, ptra);
+		al_play_sample_instance(ptra->inst[1]);
 	}
 	else if (minigame == 2) {
-		minigame2(ptrv);
+		minigame2(ptrv, ptra);
+		al_play_sample_instance(ptra->inst[1]);
 	}
 	else if (minigame == 3) {
-		minigame3(ptrv);
+		minigame3(ptrv, ptra);
 	}
 }
 
-int vidaAtual(int vidas, bool boss)
+int vidaAtual(int vidas, bool boss, audio* ptra)
 {
 	ALLEGRO_BITMAP* image2 = NULL;
 	ALLEGRO_BITMAP* image3 = NULL;
@@ -35,6 +37,7 @@ int vidaAtual(int vidas, bool boss)
 	}
 	else if (vidas == 2 && !boss) {
 		al_draw_bitmap(image2, 0, 0, 0);
+
 	}
 	else if (vidas == 1 && !boss) {
 		al_draw_bitmap(image3, 0, 0, 0);
@@ -50,7 +53,7 @@ int vidaAtual(int vidas, bool boss)
 	}
 }
 
-void minigame1(vida* ptrv) {
+void minigame1(vida* ptrv, audio* ptra) {
 	ptrv->done = false;
 
 	ALLEGRO_EVENT_QUEUE* event_queue = NULL;
@@ -72,12 +75,14 @@ void minigame1(vida* ptrv) {
 			{
 			case ALLEGRO_KEY_S:
 				ptrv->vida--;
+				al_play_sample_instance(ptra->inst[5]);
 				break;
 			case ALLEGRO_KEY_V:
 				ptrv->done = true;
 				break;
 			case ALLEGRO_KEY_M:
 				ptrv->vida--;
+				al_play_sample_instance(ptra->inst[5]);
 				break;
 			case ALLEGRO_KEY_ESCAPE:
 				ptrv->done = true;
@@ -85,7 +90,7 @@ void minigame1(vida* ptrv) {
 			}
 		}
 		al_clear_to_color(al_map_rgb(80, 58, 101));
-		vidaAtual(ptrv->vida, false);
+		vidaAtual(ptrv->vida, false, ptra);
 		al_draw_bitmap(image, 100, 40, 0);
 		al_flip_display();
 	}
@@ -94,7 +99,7 @@ void minigame1(vida* ptrv) {
 	al_destroy_event_queue(event_queue);
 }
 
-void minigame2(vida* ptrv) {
+void minigame2(vida* ptrv, audio* ptra) {
 	ptrv->done = false;
 
 	ALLEGRO_EVENT_QUEUE* event_queue = NULL;
@@ -119,9 +124,11 @@ void minigame2(vida* ptrv) {
 				break;
 			case ALLEGRO_KEY_V:
 				ptrv->vida--;
+				al_play_sample_instance(ptra->inst[5]);
 				break;
 			case ALLEGRO_KEY_M:
 				ptrv->vida--;
+				al_play_sample_instance(ptra->inst[5]);
 				break;
 			case ALLEGRO_KEY_ESCAPE:
 				ptrv->done = true;
@@ -129,7 +136,7 @@ void minigame2(vida* ptrv) {
 			}
 		}
 		al_clear_to_color(al_map_rgb(80, 58, 101));
-		vidaAtual(ptrv->vida, false);
+		vidaAtual(ptrv->vida, false, ptra);
 		al_draw_bitmap(image, 100, 40, 0);
 		al_flip_display();
 	}
@@ -138,7 +145,7 @@ void minigame2(vida* ptrv) {
 	al_destroy_event_queue(event_queue);
 }
 
-void minigame3(vida* ptrv) {
+void minigame3(vida* ptrv, audio* ptra) {
 	ptrv->done = false;
 
 	ALLEGRO_EVENT_QUEUE* event_queue = NULL;
@@ -160,9 +167,11 @@ void minigame3(vida* ptrv) {
 			{
 			case ALLEGRO_KEY_S:
 				ptrv->vida--;
+				al_play_sample_instance(ptra->inst[5]);
 				break;
 			case ALLEGRO_KEY_V:
 				ptrv->vida--;
+				al_play_sample_instance(ptra->inst[5]);
 				break;
 			case ALLEGRO_KEY_M:
 				ptrv->done = true;
@@ -173,7 +182,7 @@ void minigame3(vida* ptrv) {
 			}
 		}
 		al_clear_to_color(al_map_rgb(80, 58, 101));
-		vidaAtual(ptrv->vida, false);
+		vidaAtual(ptrv->vida, false, ptra);
 		al_draw_bitmap(image, 100, 40, 0);
 		al_flip_display();
 	}
@@ -182,12 +191,13 @@ void minigame3(vida* ptrv) {
 	al_destroy_event_queue(event_queue);
 }
 
-int boss(mapa* ptr, vida* ptrv) {
+int boss(mapa* ptr, vida* ptrv, audio* ptra) {
 	ptrv->done = false;
 
 	ALLEGRO_EVENT_QUEUE* event_queue = NULL;
 	ALLEGRO_BITMAP* image = NULL;
 
+	al_play_sample_instance(ptra->inst[7]);
 	image = al_load_bitmap("mingame/BOSS.png");
 
 	event_queue = al_create_event_queue();
@@ -204,6 +214,7 @@ int boss(mapa* ptr, vida* ptrv) {
 			{
 			case ALLEGRO_KEY_V:
 				ptrv->done = true;
+				al_stop_sample_instance(ptra->inst[7]);
 				break;
 			case ALLEGRO_KEY_F:
 				ptrv->vida = 0;
@@ -215,7 +226,7 @@ int boss(mapa* ptr, vida* ptrv) {
 		}
 		al_clear_to_color(al_map_rgb(80, 58, 101));
 		al_draw_bitmap(image, 0, 0, 0);
-		vidaAtual(ptrv->vida, true);
+		vidaAtual(ptrv->vida, true, ptra);
 		al_flip_display();
 	}
 

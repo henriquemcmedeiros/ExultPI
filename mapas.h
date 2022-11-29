@@ -132,7 +132,7 @@ void limparMapas(int** mapa) {
       free(mapa);
 }
 
-int colisao(mapa* ptr, int mapa, int minigameAtual, vida* ptrv) {
+int colisao(mapa* ptr, int mapa, int minigameAtual, vida* ptrv, audio* ptra) {
 	// ------ Colisão ------
 	// ------ MAPA  1 ------
 	if (ptr->escolhaMapa == 1) {
@@ -193,17 +193,17 @@ int colisao(mapa* ptr, int mapa, int minigameAtual, vida* ptrv) {
 			break;
 		}
 		if (ptr->pos_x >= 96 && ptr->pos_x <= 108 && ptr->pos_y == 256) {
-			minigameHub(1, ptrv);
+			minigameHub(1, ptrv, ptra);
 			ptr->map[8][3] = 65;
 			minigameAtual++;
 		}
 		if (ptr->pos_x >= 256 && ptr->pos_x <= 268 && ptr->pos_y == 256) {
-			minigameHub(2, ptrv);
+			minigameHub(2, ptrv, ptra);
 			ptr->map[8][8] = 65;
 			minigameAtual++;
 		}
 		if (ptr->pos_x >= 416 && ptr->pos_x <= 428 && ptr->pos_y == 256) {
-			minigameHub(3, ptrv);
+			minigameHub(3, ptrv, ptra);
 			ptr->map[8][13] = 65;
 			minigameAtual++;
 		}
@@ -252,7 +252,8 @@ int colisao(mapa* ptr, int mapa, int minigameAtual, vida* ptrv) {
 			ptr->pos_y = max(320, ptr->pos_y);
 		}
 		// Fechar mapa
-		if (ptr->pos_x == 32 * 7 && ptr->pos_y >= 32 * 5 && ptr->pos_y <= 32 * 6) {
+		if (ptr->pos_x == 32 * 8 && ptr->pos_y >= 32 * 5 && ptr->pos_y <= 32 * 6) {
+			al_play_sample_instance(ptra->inst[2]);
 			vitoriaM();
 			ptr->done = true;
 		}
