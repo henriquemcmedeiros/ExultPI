@@ -239,6 +239,7 @@ void dialogHub(mapa* ptr, vida* ptrv, movimento* ptrm, mapa* CountDialogo) {
 	}
 	else if (ptrm->CountDialogo == 4 && (ptr->pos_x == 416 || ptr->pos_y == 192) && ptr->escolhaMapa == 3) {
 		dialogo(5);
+		readyM();
 		boss(ptr, ptrv);
 		ptrm->CountDialogo++;
 	}
