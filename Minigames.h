@@ -133,7 +133,6 @@ void minigame2(vida* ptrv) {
 		al_draw_bitmap(image, 100, 40, 0);
 		al_flip_display();
 	}
-
 	al_destroy_bitmap(image);
 	al_destroy_event_queue(event_queue);
 }
@@ -218,7 +217,6 @@ int boss(mapa* ptr, vida* ptrv) {
 		vidaAtual(ptrv->vida, true);
 		al_flip_display();
 	}
-
 	al_destroy_bitmap(image);
 	al_destroy_event_queue(event_queue);
 }
