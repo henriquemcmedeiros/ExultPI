@@ -19,6 +19,7 @@ void minigameHub(int minigame, vida* ptrv, audio* ptra) {
 	}
 	else if (minigame == 3) {
 		minigame3(ptrv, ptra);
+		al_play_sample_instance(ptra->inst[1]);
 	}
 }
 
@@ -59,6 +60,8 @@ void minigame1(vida* ptrv, audio* ptra) {
 	ALLEGRO_EVENT_QUEUE* event_queue = NULL;
 	ALLEGRO_BITMAP* image = NULL;
 
+	//al_set_sample_instance_gain(ptra->inst[0], 0.1);
+	//al_play_sample_instance(ptra->inst[6]);
 	image = al_load_bitmap("mingame/game1.jpg");
 
 	event_queue = al_create_event_queue();
@@ -75,13 +78,16 @@ void minigame1(vida* ptrv, audio* ptra) {
 			{
 			case ALLEGRO_KEY_S:
 				ptrv->vida--;
+				al_stop_sample_instance(ptra->inst[5]);
 				al_play_sample_instance(ptra->inst[5]);
 				break;
 			case ALLEGRO_KEY_V:
 				ptrv->done = true;
+				al_set_sample_instance_gain(ptra->inst[0], 0.4);
 				break;
 			case ALLEGRO_KEY_M:
 				ptrv->vida--;
+				al_stop_sample_instance(ptra->inst[5]);
 				al_play_sample_instance(ptra->inst[5]);
 				break;
 			case ALLEGRO_KEY_ESCAPE:
@@ -105,6 +111,8 @@ void minigame2(vida* ptrv, audio* ptra) {
 	ALLEGRO_EVENT_QUEUE* event_queue = NULL;
 	ALLEGRO_BITMAP* image = NULL;
 
+	//al_set_sample_instance_gain(ptra->inst[0], 0.1);
+	//al_play_sample_instance(ptra->inst[6]);
 	image = al_load_bitmap("mingame/game2.jpg");
 
 	event_queue = al_create_event_queue();
@@ -121,13 +129,16 @@ void minigame2(vida* ptrv, audio* ptra) {
 			{
 			case ALLEGRO_KEY_S:
 				ptrv->done = true;
+				al_set_sample_instance_gain(ptra->inst[0], 0.4);
 				break;
 			case ALLEGRO_KEY_V:
 				ptrv->vida--;
+				al_stop_sample_instance(ptra->inst[5]);
 				al_play_sample_instance(ptra->inst[5]);
 				break;
 			case ALLEGRO_KEY_M:
 				ptrv->vida--;
+				al_stop_sample_instance(ptra->inst[5]);
 				al_play_sample_instance(ptra->inst[5]);
 				break;
 			case ALLEGRO_KEY_ESCAPE:
@@ -151,6 +162,8 @@ void minigame3(vida* ptrv, audio* ptra) {
 	ALLEGRO_EVENT_QUEUE* event_queue = NULL;
 	ALLEGRO_BITMAP* image = NULL;
 
+	//al_set_sample_instance_gain(ptra->inst[0], 0.1);
+	//al_play_sample_instance(ptra->inst[6]);
 	image = al_load_bitmap("mingame/game3.jpg");
 
 	event_queue = al_create_event_queue();
@@ -167,14 +180,17 @@ void minigame3(vida* ptrv, audio* ptra) {
 			{
 			case ALLEGRO_KEY_S:
 				ptrv->vida--;
+				al_stop_sample_instance(ptra->inst[5]);
 				al_play_sample_instance(ptra->inst[5]);
 				break;
 			case ALLEGRO_KEY_V:
 				ptrv->vida--;
+				al_stop_sample_instance(ptra->inst[5]);
 				al_play_sample_instance(ptra->inst[5]);
 				break;
 			case ALLEGRO_KEY_M:
 				ptrv->done = true;
+				al_set_sample_instance_gain(ptra->inst[0], 0.4);
 				break;
 			case ALLEGRO_KEY_ESCAPE:
 				ptrv->done = true;
@@ -197,6 +213,7 @@ int boss(mapa* ptr, vida* ptrv, audio* ptra) {
 	ALLEGRO_EVENT_QUEUE* event_queue = NULL;
 	ALLEGRO_BITMAP* image = NULL;
 
+	al_set_sample_instance_gain(ptra->inst[0], 0.1);
 	al_play_sample_instance(ptra->inst[7]);
 	image = al_load_bitmap("mingame/BOSS.png");
 
@@ -215,6 +232,7 @@ int boss(mapa* ptr, vida* ptrv, audio* ptra) {
 			case ALLEGRO_KEY_V:
 				ptrv->done = true;
 				al_stop_sample_instance(ptra->inst[7]);
+				al_set_sample_instance_gain(ptra->inst[0], 0.4);
 				break;
 			case ALLEGRO_KEY_F:
 				ptrv->vida = 0;

@@ -252,7 +252,8 @@ int colisao(mapa* ptr, int mapa, int minigameAtual, vida* ptrv, audio* ptra) {
 			ptr->pos_y = max(320, ptr->pos_y);
 		}
 		// Fechar mapa
-		if (ptr->pos_x == 32 * 8 && ptr->pos_y >= 32 * 5 && ptr->pos_y <= 32 * 6) {
+		if (ptr->pos_x == 32 * 7 && ptr->pos_y >= 32 * 5 && ptr->pos_y <= 32 * 6) {
+			al_stop_sample_instance(ptra->inst[0]);
 			al_play_sample_instance(ptra->inst[2]);
 			vitoriaM();
 			ptr->done = true;

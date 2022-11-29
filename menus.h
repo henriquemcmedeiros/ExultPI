@@ -135,7 +135,7 @@ void derrotaM() {
 
 	ALLEGRO_EVENT_QUEUE* event_queue = NULL;
 	ALLEGRO_BITMAP* image = NULL;
-
+	
 	image = al_load_bitmap("menus/derrota.png");
 
 	event_queue = al_create_event_queue();
