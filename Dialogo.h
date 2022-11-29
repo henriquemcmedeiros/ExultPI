@@ -1,6 +1,5 @@
 #include "header.h"
 
-
 void dialogo(int CountDialogo);
 
 void dialogo(int CountDialogo, audio* ptra) {
@@ -246,7 +245,8 @@ void dialogHub(mapa* ptr, vida* ptrv, movimento* ptrm, mapa* CountDialogo, audio
 	}
 	else if (ptrm->CountDialogo == 4 && (ptr->pos_x == 416 || ptr->pos_y == 192) && ptr->escolhaMapa == 3) {
 		dialogo(5, ptra);
-		boss(ptr, ptrv, ptra);
+		readyM();
+		boss(ptr, ptrv);
 		ptrm->CountDialogo++;
 	}
 	else if (ptrm->CountDialogo == 5 && ptr->pos_x == 64 && ptr->escolhaMapa == 3) {
