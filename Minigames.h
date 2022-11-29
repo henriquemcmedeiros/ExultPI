@@ -49,6 +49,9 @@ int vidaAtual(int vidas, bool boss, audio* ptra)
 	al_destroy_bitmap(image4);
 
 	if (vidas == 0) {
+		al_stop_sample_instance(ptra->inst[0]);
+		al_stop_sample_instance(ptra->inst[7]);
+		al_play_sample_instance(ptra->inst[3]);
 		derrotaM();
 		exit(0);
 	}
