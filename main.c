@@ -150,15 +150,6 @@ int main(void)
 		// ------ Diálogos ------
 		dialogHub(ptr, ptrv, ptrm, ptrm->CountDialogo);
 
-		// Boss sumindo e aparecendo
-		if (ptrm->CountDialogo == 5) {
-			ptr->map[10][14] = 13;
-			ptr->map = geraMapas(3);
-		}
-		else if (ptr->escolhaMapa == 3){
-			ptr->map[10][14] = 55;
-		}
-
 		al_flip_display();
 		al_clear_to_color(al_map_rgb(0, 0, 0));
 	}
