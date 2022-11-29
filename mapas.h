@@ -171,19 +171,19 @@ int colisao(mapa* ptr, int mapa, int minigameAtual, vida* ptrv) {
 		{
 		case 0:
 			ptr->map[8][3] = 64;
-			if (ptr->pos_x != 96) {
+			if (!(ptr->pos_x >= 96 && ptr->pos_x <= 108)) {
 				ptr->pos_y = max(288, ptr->pos_y);
 			}
 			break;
 		case 1:
 			ptr->map[8][8] = 64;
-			if (ptr->pos_x != 256) {
+			if (!(ptr->pos_x >= 256 && ptr->pos_x <= 268)) {
 				ptr->pos_y = max(288, ptr->pos_y);
 			}
 			break;
 		case 2:
 			ptr->map[8][13] = 64;
-			if (ptr->pos_x != 416) {
+			if (!(ptr->pos_x >= 416 && ptr->pos_x <= 428)) {
 				ptr->pos_y = max(288, ptr->pos_y);
 			}
 			break;
@@ -192,17 +192,17 @@ int colisao(mapa* ptr, int mapa, int minigameAtual, vida* ptrv) {
 			ptr->pos_y = max(288, ptr->pos_y);
 			break;
 		}
-		if (ptr->pos_x == 96 && ptr->pos_y == 256) {
+		if (ptr->pos_x >= 96 && ptr->pos_x <= 108 && ptr->pos_y == 256) {
 			minigameHub(1, ptrv);
 			ptr->map[8][3] = 65;
 			minigameAtual++;
 		}
-		if (ptr->pos_x == 256 && ptr->pos_y == 256) {
+		if (ptr->pos_x >= 256 && ptr->pos_x <= 268 && ptr->pos_y == 256) {
 			minigameHub(2, ptrv);
 			ptr->map[8][8] = 65;
 			minigameAtual++;
 		}
-		if (ptr->pos_x == 416 && ptr->pos_y == 256) {
+		if (ptr->pos_x >= 416 && ptr->pos_x <= 428 && ptr->pos_y == 256) {
 			minigameHub(3, ptrv);
 			ptr->map[8][13] = 65;
 			minigameAtual++;
@@ -242,7 +242,7 @@ int colisao(mapa* ptr, int mapa, int minigameAtual, vida* ptrv) {
 			ptr->pos_x = min(17 * 32, ptr->pos_x);
 		}
 		// Parede esquerda
-		if (ptr->pos_y != 160) {
+		if (!(ptr->pos_y >= 160 && ptr->pos_y >= 152)) {
 			ptr->pos_x = max(32 * 8, ptr->pos_x);
 		}
 		// Parede superior e inferior
@@ -252,7 +252,7 @@ int colisao(mapa* ptr, int mapa, int minigameAtual, vida* ptrv) {
 			ptr->pos_y = max(320, ptr->pos_y);
 		}
 		// Fechar mapa
-		if (ptr->pos_x == 32 * 7 && ptr->pos_y == 32 * 5) {
+		if (ptr->pos_x == 32 * 7 && ptr->pos_y >= 32 * 5 && ptr->pos_y <= 32 * 6) {
 			vitoriaM();
 			ptr->done = true;
 		}
