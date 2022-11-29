@@ -68,7 +68,7 @@ void sons(audio* ptra) {
 	ptra->sounds[6] = NULL;
 	ptra->inst[6] = NULL;
 
-	ptra->sounds[6] = al_load_sample("Audios/trilha sonora/minigame.wav"); //carrega qual arquivo vai tocar
+	ptra->sounds[6] = al_load_sample("Audios/Trilha sonora/minigame.wav"); //carrega qual arquivo vai tocar
 	ptra->inst[6] = al_create_sample_instance(ptra->sounds[6]); //instancia ele
 	al_attach_sample_instance_to_mixer(ptra->inst[6], al_get_default_mixer()); //faz com que ela fique num padrao ja definido poupando trabalho
 	al_set_sample_instance_playmode(ptra->inst[6], ALLEGRO_PLAYMODE_LOOP); //coloca a soundtrack em loop
@@ -102,8 +102,8 @@ void destroyAudios(audio* ptra) {
 	al_destroy_sample_instance(ptra->inst[2]);
 
 	// ------ Derrota ------
-	//al_destroy_sample(ptra->sounds[3]);
-	//al_destroy_sample_instance(ptra->inst[3]);
+	al_destroy_sample(ptra->sounds[3]);
+	al_destroy_sample_instance(ptra->inst[3]);
 
 	// ------ Dialogo ------
 	al_destroy_sample(ptra->sounds[4]);

@@ -11,6 +11,7 @@ void movimentos(mapa* ptr, vida* ptrv, movimento* ptrm, ALLEGRO_EVENT ev);
 
 int main(void)
 {
+	// ------ Criação dos ponteiros ------
 	mapa* ptr = (mapa*)malloc(sizeof(mapa));
 	vida* ptrv = (vida*)malloc(sizeof(vida));
 	movimento* ptrm = (movimento*)malloc(sizeof(movimento));
