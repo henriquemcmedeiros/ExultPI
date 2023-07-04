@@ -1,3 +1,7 @@
+# Exult
+
+Status: Done
+
 # **Exult**
 
 ---
@@ -16,9 +20,13 @@ Com muito mistério e aventura, o jogo se inicia com o sumiço de Ethan Goodman,
 
 Ethan acorda acorrentado em uma sala de tom hostil, com pouca iluminação e muita sujeira até se dar conta de que estava em um presídio abandonado e agora para sair ele precisará sobreviver aos desafios e enigmas que o local tem a oferecer.
 
+![Untitled](Exult%208c0d2427b02a4e608484c7f582bef404/Untitled.png)
+
 ### Mecânicas
 
 A mecânica em ***Exult*** trabalha diretamente para o ensino de lógica referindo-se justamente a álgebra booleana. No jogo você terá que resolver problemas distintos analisando,  arrumando e atribuindo significado para diversos Circuitos Lógicos. Além disso você deverá explorar o mapa em busca de pistas e dicas sobre o funcionamento dos circuitos, para assim resolver os inúmeros desafios que a prisão de ***Exult*** te dará.
+
+![Untitled](Exult%208c0d2427b02a4e608484c7f582bef404/Untitled%201.png)
 
 ### Gameplay
 
@@ -28,14 +36,7 @@ A mecânica em ***Exult*** trabalha diretamente para o ensino de lógica referin
 
 O jogo é composto por comando padrões, não podendo ser alterados durante a gameplay.
 
-W ou 🔼  - para de movimentar para frente |||
-S ou 🔽 -  para se movimentar para trás |||
-A ou ◀ - para se movimentar para a esquerda |||
-D ou ▶ - para se movimentar para a direita |||
-Q - para abrir o inventário |||
-F - Passar para o próximo diálogo |||
-H - Pular diálogo |||
-Esc - para pausar o jogo |||
+![Untitled](Exult%208c0d2427b02a4e608484c7f582bef404/Untitled%202.png)
 
 ### Produção do projeto
 
