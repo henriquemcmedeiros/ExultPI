@@ -28,14 +28,14 @@ A mecânica em ***Exult*** trabalha diretamente para o ensino de lógica referin
 
 O jogo é composto por comando padrões, não podendo ser alterados durante a gameplay.
 
-W ou 🔼  - para de movimentar para frente
-S ou 🔽 -  para se movimentar para trás
-A ou ◀ - para se movimentar para a esquerda
-D ou ▶ - para se movimentar para a direita
-Q - para abrir o inventário
-F - Passar para o próximo diálogo
-H - Pular diálogo 
-Esc - para pausar o jogo
+W ou 🔼  - para de movimentar para frente |||
+S ou 🔽 -  para se movimentar para trás |||
+A ou ◀ - para se movimentar para a esquerda |||
+D ou ▶ - para se movimentar para a direita |||
+Q - para abrir o inventário |||
+F - Passar para o próximo diálogo |||
+H - Pular diálogo |||
+Esc - para pausar o jogo |||
 
 ### Produção do projeto
 
